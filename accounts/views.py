@@ -3,15 +3,21 @@ from django.contrib import auth
 from django.http import HttpResponseServerError
 from django.shortcuts import redirect
 from django.views import View
-from accounts.settings import CLIENT_ID, CLIENT_SECRET, PLATFORM_URL, REDIRECT_URI, SCOPE
+from accounts.settings import accounts_settings
 
 
 class LoginView(View):
     def get(self, request):
         request.session.__setitem__('next', request.GET.get('next'))
         if not request.user.is_authenticated:
-            platform = OAuth2Session(CLIENT_ID, scope=SCOPE, redirect_uri=REDIRECT_URI)
-            authorization_url, state = platform.authorization_url(PLATFORM_URL + '/accounts/authorize/')
+            platform = OAuth2Session(
+                accounts_settings.CLIENT_ID,
+                scope=accounts_settings.SCOPE,
+                redirect_uri=accounts_settings.REDIRECT_URI
+            )
+            authorization_url, state = platform.authorization_url(
+                accounts_settings.PLATFORM_URL + '/accounts/authorize/'
+            )
             response = redirect(authorization_url)
             request.session.__setitem__('state', state)
             return response
@@ -22,15 +28,16 @@ class CallbackView(View):
     def get(self, request):
         code = request.GET.get('code')
         state = request.session.pop('state')
-        platform = OAuth2Session(CLIENT_ID, state=state)
+        platform = OAuth2Session(accounts_settings.CLIENT_ID, state=state)
         token = platform.fetch_token(
-            PLATFORM_URL + '/accounts/token/',
-            client_secret=CLIENT_SECRET,
+            accounts_settings.PLATFORM_URL + '/accounts/token/',
+            client_secret=accounts_settings.CLIENT_SECRET,
             authorization_response=request.get_full_path()
         )
-        platform = OAuth2Session(CLIENT_ID, token=token)
+        platform = OAuth2Session(accounts_settings.CLIENT_ID, token=token)
         access_token = token['access_token']
-        uuid = platform.get(PLATFORM_URL + '/accounts/introspect/?token=' + access_token).json()['uuid']
+        introspect_url = accounts_settings.PLATFORM_URL + '/accounts/introspect/?token=' + access_token
+        uuid = platform.get(introspect_url).json()['uuid']
         user = auth.authenticate(remote_user=uuid)
         if user:
             auth.login(request, user)
