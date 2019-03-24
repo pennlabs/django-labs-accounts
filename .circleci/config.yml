@@ -1,0 +1,43 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/django-labs-accounts
+    docker:
+      - image: themattrix/tox
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+      - restore_cache:
+          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+      - run:
+          name: Install dependencies
+          command: |
+            pip tox coveralls
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - save_cache:
+          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ".venv"
+            - "/usr/local/bin"
+            - "/usr/local/lib/python3.7/site-packages"
+      - run:
+          name: Run tests
+          command: |
+            tox
+            coveralls
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
