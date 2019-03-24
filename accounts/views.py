@@ -1,6 +1,7 @@
 from requests_oauthlib import OAuth2Session
 from django.contrib import auth
 from django.http import HttpResponseServerError
+from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views import View
 from accounts.settings import accounts_settings
@@ -8,7 +9,10 @@ from accounts.settings import accounts_settings
 
 class LoginView(View):
     def get(self, request):
-        request.session.__setitem__('next', request.GET.get('next'))
+        return_to = request.GET.get('next')
+        if not return_to:
+            return HttpResponseBadRequest("Invalid next parameter")
+        request.session.__setitem__('next', return_to)
         if not request.user.is_authenticated:
             platform = OAuth2Session(
                 accounts_settings.CLIENT_ID,
@@ -26,7 +30,6 @@ class LoginView(View):
 
 class CallbackView(View):
     def get(self, request):
-        code = request.GET.get('code')
         state = request.session.pop('state')
         platform = OAuth2Session(accounts_settings.CLIENT_ID, state=state)
         token = platform.fetch_token(

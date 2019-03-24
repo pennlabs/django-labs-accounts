@@ -13,9 +13,10 @@ class LoginViewTestCase(TestCase):
 
     def test_invalid_next(self):
         response = self.client.get(reverse('accounts:login'))
+        self.assertEqual(response.status_code, 400)
 
     def test_authenticated_user(self):
-        student = self.User.objects.create_user(
+        self.User.objects.create_user(
             username='00000000000000000000000000000001',
             uuid='00000000000000000000000000000001',
             password='secret'
@@ -55,7 +56,7 @@ class CallbackViewTestCase(TestCase):
         self.assertRedirects(response, self.redirect, fetch_redirect_response=False)
 
     def test_inactive_user(self, mock_fetch_token, mock_get):
-        student = self.User.objects.create_user(
+        self.User.objects.create_user(
             username='00000000000000000000000000000001',
             uuid='00000000000000000000000000000001',
             password='secret',
