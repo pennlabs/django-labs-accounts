@@ -4,9 +4,9 @@ Django Labs Accounts
     :target: https://circleci.com/gh/pennlabs/django-labs-accounts
 .. image:: https://coveralls.io/repos/github/pennlabs/django-labs-accounts/badge.svg?branch=feature%2Fsettings
     :target: https://coveralls.io/github/pennlabs/django-labs-accounts?branch=feature%2Fsettings
-.. image:: https://img.shields.io/pypi/v/django-labs-accounts.svg   :alt: PyPI
+.. image:: https://img.shields.io/pypi/v/django-labs-accounts.svg
     :target: https://pypi.org/project/django-labs-accounts/
-    
+
 Requirements
 ------------
 
