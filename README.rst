@@ -67,4 +67,4 @@ See `CHANGELOG.md <https://github.com/pennlabs/django-labs-accounts/blob/master/
 
 License
 -------
-Licensed See `LICENSE.md <https://github.com/pennlabs/django-labs-accounts/blob/master/LICENSE.md>`_.
+See `LICENSE.md <https://github.com/pennlabs/django-labs-accounts/blob/master/LICENSE.md>`_.
