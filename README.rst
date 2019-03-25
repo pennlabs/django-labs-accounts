@@ -9,6 +9,8 @@ Django Labs Accounts
 
 Requirements
 ------------
+* Python 3.4+
+* Django 2.0+
 
 Installation
 ------------
