@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/django-labs-accounts
+    docker:
+      - image: themattrix/tox
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            pip install tox coveralls
+      - run:
+          name: Run tests
+          command: |
+            tox
+            coveralls
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build

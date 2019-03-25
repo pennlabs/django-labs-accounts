@@ -12,7 +12,7 @@ class BackendTestCase(TestCase):
         self.assertIsNone(user)
 
     def test_create_user(self):
-        user = auth.authenticate(remote_user='00000000000000000000000000000001')
+        auth.authenticate(remote_user='00000000000000000000000000000001')
         self.assertEqual(len(self.User.objects.all()), 1)
         self.assertEqual(str(self.User.objects.all()[0].uuid), '00000000-0000-0000-0000-000000000001')
         self.assertEqual(str(self.User.objects.all()[0]), '00000000000000000000000000000001')
