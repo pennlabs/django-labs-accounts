@@ -9,12 +9,17 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            pip install tox coveralls
+            pip install tox coveralls unittest-xml-reporting
       - run:
           name: Run tests
           command: |
             tox
             coveralls
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test_results
+          destination: trl
 
 workflows:
   version: 2
