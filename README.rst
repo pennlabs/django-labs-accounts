@@ -18,6 +18,7 @@ Install with pipenv
     pipenv install django-labs-accounts
 
 Add `accounts` to `INSTALLED_APPS`
+
 .. code-block:: python
 
     INSTALLED_APPS = (
@@ -26,6 +27,7 @@ Add `accounts` to `INSTALLED_APPS`
     )
 
 Add the following to `urls.py`
+
 .. code-block:: python
 
     urlpatterns = [
