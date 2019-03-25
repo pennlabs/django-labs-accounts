@@ -4,9 +4,9 @@ from django.conf import settings
 USER_SETTINGS = getattr(settings, "PLATFORM_ACCOUNTS", {})
 
 DEFAULTS = {
-    'CLIENT_ID': os.environ.get('OAUTH2_CLIENT_ID'),
-    'CLIENT_SECRET': os.environ.get('OAUTH2_CLIENT_SECRET'),
-    'REDIRECT_URI': os.environ.get('OAUTH2_REDIRECT_URI'),
+    'CLIENT_ID': os.environ.get('LABS_CLIENT_ID'),
+    'CLIENT_SECRET': os.environ.get('LABS_CLIENT_SECRET'),
+    'REDIRECT_URI': os.environ.get('LABS_REDIRECT_URI'),
     'SCOPE': ['read', 'introspection'],
     'PLATFORM_URL': 'https://platform.pennlabs.org',
 }
