@@ -37,7 +37,29 @@ Add the following to `urls.py`
 
 Documentation
 -------------
-TODO
+All settings are handled with a `PLATFORM_ACCOUNTS` dictionary.
+
+Example:
+
+.. code-block:: python
+
+    PLATFORM_ACCOUNTS = {
+        'CLIENT_ID': 'id',
+        'CLIENT_SECRET': 'secret',
+        'REDIRECT_URI': 'example',
+    }
+
+The available settings are:
+
+`CLIENT_ID` the client ID to connect to platform with. Defaults to `LABS_CLIENT_ID` environment variable.
+
+`CLIENT_SECRET` the client secret to connect to platform with. Defaults to `LABS_CLIENT_SECRET` environment variable.
+
+`REDIRECT_URI` the redirect uri to send to platform. Defaults to `LABS_REDIRECT_URI` environment variable.
+
+`SCOPE` the scope for this applications tokens. Must include `introspection`. Defaults to `['read', 'introspection']`.
+
+`PLATFORM_URL` URL of platform server to connect to. Should be `https://platform(-dev).pennlabs.org` (no trailing slash)
 
 Changelog
 ---------
