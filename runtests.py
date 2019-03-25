@@ -1,9 +1,9 @@
 import sys
 import django
-from django.test.runner import DiscoverRunner
+from xmlrunner.extra.djangotestrunner import XMLTestRunner
 
 django.setup()
-test_runner = DiscoverRunner(verbosity=1)
+test_runner = XMLTestRunner(verbosity=2)
 
 failures = test_runner.run_tests(['tests'])
 if failures:
