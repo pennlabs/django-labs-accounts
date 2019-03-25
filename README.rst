@@ -63,8 +63,8 @@ The available settings are:
 
 Changelog
 ---------
-See ``CHANGELOG.md <https://github.com/pennlabs/django-labs-accounts/blob/master/CHANGELOG.md>``_.
+See `CHANGELOG.md <https://github.com/pennlabs/django-labs-accounts/blob/master/CHANGELOG.md>`_.
 
 License
 -------
-Licensed See ``LICENSE.md <https://github.com/pennlabs/django-labs-accounts/blob/master/LICENSE.md>``_.
+Licensed See `LICENSE.md <https://github.com/pennlabs/django-labs-accounts/blob/master/LICENSE.md>`_.
