@@ -12,6 +12,9 @@ class LabsUserBackend(RemoteUserBackend):
             user.username = user.uuid
             user.set_unusable_password()
             user.save()
-            user = self.configure_user(user)
+            try:
+                user = self.configure_user(request, user)
+            except TypeError:
+                user = self.configure_user(user)
 
         return user if self.user_can_authenticate(user) else None
