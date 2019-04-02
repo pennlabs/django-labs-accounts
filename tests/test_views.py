@@ -1,8 +1,10 @@
-from unittest.mock import patch
 import urllib.parse
-from django.test import TestCase, Client
-from django.urls import reverse
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
+from django.urls import reverse
+
 from accounts.settings import accounts_settings
 
 

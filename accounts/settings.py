@@ -1,7 +1,9 @@
 import os
+
 from django.conf import settings
 
-USER_SETTINGS = getattr(settings, "PLATFORM_ACCOUNTS", {})
+
+USER_SETTINGS = getattr(settings, 'PLATFORM_ACCOUNTS', {})
 
 DEFAULTS = {
     'CLIENT_ID': os.environ.get('LABS_CLIENT_ID'),
@@ -22,7 +24,7 @@ class AccountsSettings(object):
 
     def __getattr__(self, attr):
         if attr not in self.defaults.keys():
-            raise AttributeError("Invalid Penn Labs accounts setting: %s" % attr)
+            raise AttributeError('Invalid Penn Labs accounts setting: %s' % attr)
 
         try:
             val = self.settings[attr]

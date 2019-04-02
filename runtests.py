@@ -1,6 +1,8 @@
 import sys
+
 import django
 from xmlrunner.extra.djangotestrunner import XMLTestRunner
+
 
 django.setup()
 test_runner = XMLTestRunner(verbosity=2)
