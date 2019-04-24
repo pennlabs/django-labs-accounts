@@ -47,6 +47,7 @@ Example:
         'CLIENT_ID': 'id',
         'CLIENT_SECRET': 'secret',
         'REDIRECT_URI': 'example',
+        'ADMIN_PERMISSION': 'example_admin'
     }
 
 The available settings are:
@@ -60,6 +61,8 @@ The available settings are:
 ``SCOPE`` the scope for this applications tokens. Must include ``introspection``. Defaults to ``['read', 'introspection']``.
 
 ``PLATFORM_URL`` URL of platform server to connect to. Should be ``https://platform(-dev).pennlabs.org`` (no trailing slash)
+
+``ADMIN_PERMISSION`` The name of the permission on platform to grant admin access. Defaults to ``example_admin``
 
 Changelog
 ---------
