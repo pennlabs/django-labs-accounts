@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.3.2 (2019-04-23)
+------------------
+* Fix: Corrupt pypi release
+
 0.3.1 (2019-04-23)
 ------------------
 * Fix: Remove unneeded migrations files
