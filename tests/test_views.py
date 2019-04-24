@@ -19,11 +19,10 @@ class LoginViewTestCase(TestCase):
 
     def test_authenticated_user(self):
         self.User.objects.create_user(
-            username='00000000000000000000000000000001',
-            uuid='00000000000000000000000000000001',
+            username='user',
             password='secret'
         )
-        self.client.login(username='00000000000000000000000000000001', password='secret')
+        self.client.login(username='user', password='secret')
         redirect = 'https://example.com/'
         response = self.client.get(reverse('accounts:login') + '?next=' + redirect)
         self.assertRedirects(response, redirect, fetch_redirect_response=False)
@@ -50,21 +49,32 @@ class CallbackViewTestCase(TestCase):
         session['next'] = self.redirect
         session.save()
         self.User = get_user_model()
+        self.mock_get = {
+            'user': {
+                'major': 'Major',
+                'school': 'School',
+                'first_name': 'First',
+                'last_name': 'Last',
+                'username': 'user',
+                'email': 'test@test.com',
+                'affiliation': [],
+                'product_permission': []
+            }
+        }
 
     def test_active_user(self, mock_fetch_token, mock_get):
         mock_fetch_token.return_value = {'access_token': 'abc'}
-        mock_get.return_value.json.return_value = {'uuid': '00000000000000000000000000000001'}
+        mock_get.return_value.json.return_value = self.mock_get
         response = self.client.get(reverse('accounts:callback'))
         self.assertRedirects(response, self.redirect, fetch_redirect_response=False)
 
     def test_inactive_user(self, mock_fetch_token, mock_get):
         self.User.objects.create_user(
-            username='00000000000000000000000000000001',
-            uuid='00000000000000000000000000000001',
+            username='user',
             password='secret',
             is_active=False
         )
         mock_fetch_token.return_value = {'access_token': 'abc'}
-        mock_get.return_value.json.return_value = {'uuid': '00000000000000000000000000000001'}
+        mock_get.return_value.json.return_value = self.mock_get
         response = self.client.get(reverse('accounts:callback'))
         self.assertEqual(response.status_code, 500)
