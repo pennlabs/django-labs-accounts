@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.3.1 (2019-04-23)
+------------------
+* Fix: Remove unneeded migrations files
+
 0.3.0 (2019-04-23)
 ------------------
 * Fix: Remove custom user model and rely on default django model
