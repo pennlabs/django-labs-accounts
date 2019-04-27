@@ -4,7 +4,8 @@ import sys
 from setuptools import setup
 from setuptools.command.install import install
 
-VERSION = "0.3.2"
+
+VERSION = '0.3.2'
 
 
 class VerifyVersionCommand(install):
@@ -15,7 +16,7 @@ class VerifyVersionCommand(install):
         tag = os.getenv('CIRCLE_TAG')
 
         if tag != VERSION:
-            info = "Git tag: {0} does not match the version of this app: {1}".format(
+            info = 'Git tag: {0} does not match the version of this app: {1}'.format(
                 tag, VERSION
             )
             sys.exit(info)
