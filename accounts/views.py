@@ -36,7 +36,7 @@ class CallbackView(View):
         token = platform.fetch_token(
             accounts_settings.PLATFORM_URL + '/accounts/token/',
             client_secret=accounts_settings.CLIENT_SECRET,
-            authorization_response=request.get_full_path()
+            authorization_response=request.build_absolute_uri()
         )
         platform = OAuth2Session(accounts_settings.CLIENT_ID, token=token)
         access_token = token['access_token']
