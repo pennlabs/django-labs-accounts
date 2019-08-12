@@ -76,6 +76,14 @@ The available settings are:
 
 ``ADMIN_PERMISSION`` The name of the permission on platform to grant admin access. Defaults to ``example_admin``
 
+|
+
+When developing with an http (not https) callback URL, it may be helpful to set the ``OAUTHLIB_INSECURE_TRANSPORT`` environment variable.
+
+.. code-block:: python
+
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = "1"
+
 Changelog
 ---------
 See `CHANGELOG.md <https://github.com/pennlabs/django-labs-accounts/blob/master/CHANGELOG.md>`_.
