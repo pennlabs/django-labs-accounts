@@ -24,6 +24,17 @@ Add ``accounts`` to ``INSTALLED_APPS``
     INSTALLED_APPS = (
         ...
         'accounts.apps.AccountsConfig',
+        ...
+    )
+
+Add the new accounts backend to ``AUTHENTICATION_BACKENDS``
+
+.. code-block:: python
+
+    AUTHENTICATION_BACKENDS = (
+        ...
+        'django.contrib.auth.backends.ModelBackend',
+        ...
     )
 
 Add the following to ``urls.py``
@@ -32,7 +43,8 @@ Add the following to ``urls.py``
 
     urlpatterns = [
         ...
-        path('accounts/', include('accounts.urls', namespace='accounts'))
+        path('accounts/', include('accounts.urls', namespace='accounts')),
+        ...
     ]
 
 Documentation
