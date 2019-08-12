@@ -47,3 +47,9 @@ class CallbackView(View):
             auth.login(request, user)
             return redirect(request.session.pop('next'))
         return HttpResponseServerError()
+
+
+class LogoutView(View):
+    def get(self, request):
+        auth.logout(request)
+        return redirect('/')
