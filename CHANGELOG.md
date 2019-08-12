@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.3.4 (2019-08-12)
+------------------
+* Feature: Add logout route
+
 0.3.3 (2019-08-12)
 ------------------
 * Fix: Callback token request
