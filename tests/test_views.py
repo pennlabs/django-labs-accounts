@@ -78,3 +78,22 @@ class CallbackViewTestCase(TestCase):
         mock_get.return_value.json.return_value = self.mock_get
         response = self.client.get(reverse('accounts:callback'))
         self.assertEqual(response.status_code, 500)
+
+
+class LogoutViewTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.User = get_user_model()
+
+        def test_logged_in_user(self):
+            self.User.objects.create_user(username='user', password='secret')
+            self.client.login(username='user', password='secret')
+            response = self.client.get(reverse('accounts:logout'))
+            self.assertNotIn('_auth_user_id', self.client.session)
+            sample_response = '/'
+            self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+
+        def test_guest_user(self):
+            response = self.client.get(reverse('accounts:logout'))
+            sample_response = '/'
+            self.assertRedirects(response, sample_response, fetch_redirect_response=False)
