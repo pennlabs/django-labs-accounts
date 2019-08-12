@@ -5,7 +5,7 @@ from setuptools import setup
 from setuptools.command.install import install
 
 
-VERSION = '0.3.2'
+VERSION = '0.3.3'
 
 
 class VerifyVersionCommand(install):

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.3.3 (2019-08-12)
+------------------
+* Fix: Callback token request
+* Fix: Installation documentation
+
 0.3.2 (2019-04-23)
 ------------------
 * Fix: Corrupt pypi release
