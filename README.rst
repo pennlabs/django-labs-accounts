@@ -2,8 +2,8 @@ Django Labs Accounts
 ====================
 .. image:: https://img.shields.io/circleci/project/github/pennlabs/django-labs-accounts/master.svg
     :target: https://circleci.com/gh/pennlabs/django-labs-accounts
-.. image:: https://coveralls.io/repos/github/pennlabs/django-labs-accounts/badge.svg?branch=feature%2Fsettings
-    :target: https://coveralls.io/github/pennlabs/django-labs-accounts?branch=feature%2Fsettings
+.. image:: https://coveralls.io/repos/github/pennlabs/django-labs-accounts/badge.svg?branch=master
+    :target: https://coveralls.io/github/pennlabs/django-labs-accounts?branch=master
 .. image:: https://img.shields.io/pypi/v/django-labs-accounts.svg
     :target: https://pypi.org/project/django-labs-accounts/
 
