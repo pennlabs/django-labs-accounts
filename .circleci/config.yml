@@ -3,22 +3,17 @@ jobs:
   build:
     working_directory: ~/django-labs-accounts
     docker:
-      - image: themattrix/tox
+      - image: pennlabs/tox
     steps:
-      - run:
-          name: Install ssh
-          command: |
-            apt-get update && apt-get install -y ssh
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            pip install tox coveralls
       - run:
           name: Run tests
           command: |
             tox
-            coveralls
+      - run:
+          name: Upload code coverage
+          command: |
+            pipenv run coveralls
       - store_test_results:
           path: test-results
       - store_artifacts:
