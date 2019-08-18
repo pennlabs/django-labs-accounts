@@ -32,7 +32,7 @@ class LoginView(View):
 class CallbackView(View):
     def get(self, request):
         state = request.session.pop('state')
-        platform = OAuth2Session(accounts_settings.CLIENT_ID, state=state)
+        platform = OAuth2Session(accounts_settings.CLIENT_ID, redirect_uri=accounts_settings.REDIRECT_URI, state=state)
         token = platform.fetch_token(
             accounts_settings.PLATFORM_URL + '/accounts/token/',
             client_secret=accounts_settings.CLIENT_SECRET,

@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.3.5 (2019-08-18)
+------------------
+* Fix: Callback when multiple redirect_uris are defined
+
 0.3.4 (2019-08-12)
 ------------------
 * Feature: Add logout route
