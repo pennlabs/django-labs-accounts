@@ -5,6 +5,10 @@ jobs:
     docker:
       - image: themattrix/tox
     steps:
+      - run:
+          name: Install ssh
+          command: |
+            apt-get update && apt-get install -y ssh
       - checkout
       - run:
           name: Install dependencies
