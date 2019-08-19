@@ -97,3 +97,8 @@ class LogoutViewTestCase(TestCase):
         response = self.client.get(reverse('accounts:logout'))
         sample_response = '/'
         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+
+    def test_redirect(self):
+        response = self.client.get(reverse('accounts:logout') + '?next=http://example.com')
+        sample_response = 'http://example.com'
+        self.assertRedirects(response, sample_response, fetch_redirect_response=False)
