@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.3.6 (2019-08-18)
+------------------
+* Feature: Allow redirect to be specified on logout
+
 0.3.5 (2019-08-18)
 ------------------
 * Fix: Callback when multiple redirect_uris are defined
