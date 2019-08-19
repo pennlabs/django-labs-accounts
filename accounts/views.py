@@ -52,4 +52,4 @@ class CallbackView(View):
 class LogoutView(View):
     def get(self, request):
         auth.logout(request)
-        return redirect('/')
+        return redirect(request.GET.get('next', '/'))
