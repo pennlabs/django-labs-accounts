@@ -13,7 +13,7 @@ jobs:
       - run:
           name: Upload code coverage
           command: |
-            pipenv run coveralls
+            coveralls
       - store_test_results:
           path: test-results
       - store_artifacts:
