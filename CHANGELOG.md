@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.3.7 (2019-09-07)
+------------------
+* Feature: Custom admin login handler
+
 0.3.6 (2019-08-18)
 ------------------
 * Feature: Allow redirect to be specified on logout
