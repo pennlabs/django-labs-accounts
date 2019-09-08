@@ -60,6 +60,7 @@ Example:
         'CLIENT_SECRET': 'secret',
         'REDIRECT_URI': 'example',
         'ADMIN_PERMISSION': 'example_admin'
+        'CUSTOM_ADMIN': True
     }
 
 The available settings are:
@@ -75,6 +76,8 @@ The available settings are:
 ``PLATFORM_URL`` URL of platform server to connect to. Should be ``https://platform(-dev).pennlabs.org`` (no trailing slash)
 
 ``ADMIN_PERMISSION`` The name of the permission on platform to grant admin access. Defaults to ``example_admin``
+
+``CUSTOM_ADMIN`` enable the custom admin login page to log in users through platform. Defaults to ``True``
 
 |
 
