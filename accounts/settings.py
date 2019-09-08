@@ -11,7 +11,8 @@ DEFAULTS = {
     'REDIRECT_URI': os.environ.get('LABS_REDIRECT_URI'),
     'SCOPE': ['read', 'introspection'],
     'PLATFORM_URL': 'https://platform.pennlabs.org',
-    'ADMIN_PERMISSION': 'example_admin'
+    'ADMIN_PERMISSION': 'example_admin',
+    'CUSTOM_ADMIN': True
 }
 
 
