@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 
-class AppsTestCase(TestCase):
+class LabsAdminTestCase(TestCase):
     def test_admin_not_logged_in(self):
         response = self.client.get(reverse('admin:login') + '?next=/admin/')
         redirect = '/accounts/login/?next=/admin/'
