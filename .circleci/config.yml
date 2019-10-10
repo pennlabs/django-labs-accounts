@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/django-labs-accounts
+    working_directory: ~/pennlabs
     docker:
       - image: pennlabs/tox
     steps:
@@ -20,8 +20,9 @@ jobs:
           path: test_results
           destination: trl
   publish:
+    working_directory: ~/pennlabs
     docker:
-      - image: circleci/python:3.7.1
+      - image: circleci/python:3.7
     steps:
       - checkout
       - restore_cache:

@@ -1,8 +1,13 @@
-dist/
-__pycache__/
-*/__pycache__/
+# IDEs and OSs
+.vscode
+.DS_Store
+
+# Python
 build/
-*.egg-info
 .coverage
+dist/
+*.egg-info
+*.pyc
+__pycache__/
 .tox
 test-results/

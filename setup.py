@@ -6,6 +6,7 @@ from setuptools.command.install import install
 
 
 VERSION = '0.3.7'
+DESCRIPTION = open('README.md', encoding='utf-8').read()
 
 
 class VerifyVersionCommand(install):
@@ -23,7 +24,31 @@ class VerifyVersionCommand(install):
 
 
 setup(
+    name='django-labs-accounts',
     version=VERSION,
+    packages=['accounts'],
+    url='https://github.com/pennlabs/django-labs-accounts',
+    project_urls={
+        'Changelog': ('https://github.com/pennlabs/django-labs-accounts/blob/master/CHANGELOG.md')
+    },
+    license='MIT',
+    author='Penn Labs',
+    author_email='admin@pennlabs.org',
+    description='Reusable Django app for Penn Labs accounts',
+    long_description=DESCRIPTION,
+    long_description_content_type='text/markdown',
+    install_requires=[
+        'django>=2.0.0',
+        'requests-oauthlib>=1.2.0'
+    ],
+    classifiers=[
+        'Framework :: Django',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+    ],
+    python_requires='>=3.5',
     cmdclass={
         'verify': VerifyVersionCommand,
     }
