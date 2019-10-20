@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.3.8 (UNRELEASED)
+------------------
+* Fix: Use POST in introspect call
+
 0.3.7 (2019-09-07)
 ------------------
 * Feature: Custom admin login handler
