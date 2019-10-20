@@ -40,8 +40,8 @@ class CallbackView(View):
         )
         platform = OAuth2Session(accounts_settings.CLIENT_ID, token=token)
         access_token = token['access_token']
-        introspect_url = accounts_settings.PLATFORM_URL + '/accounts/introspect/?token=' + access_token
-        user_props = platform.get(introspect_url).json()['user']
+        introspect_url = accounts_settings.PLATFORM_URL + '/accounts/introspect/'
+        user_props = platform.post(introspect_url, data={'token': access_token}).json()['user']
         user = auth.authenticate(request, remote_user=user_props)
         if user:
             auth.login(request, user)
