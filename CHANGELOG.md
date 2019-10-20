@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.8 (UNRELEASED)
+0.3.8 (2019-10-20)
 ------------------
 * Fix: Use POST in introspect call
 
