@@ -22,7 +22,13 @@ class LabsUserBackend(RemoteUserBackend):
                 user = self.configure_user(user)
 
         if accounts_settings.ADMIN_PERMISSION in remote_user['product_permission']:
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()
+            if (not user.is_staff):
+                user.is_staff = True
+                user.is_superuser = True
+                user.save()
+        else:
+            if (user.is_staff):
+                user.is_staff = False
+                user.is_superuser = False
+                user.save()
         return user if self.user_can_authenticate(user) else None
