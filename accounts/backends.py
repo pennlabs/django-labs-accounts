@@ -13,7 +13,10 @@ class LabsUserBackend(RemoteUserBackend):
         if not remote_user:
             return
         User = get_user_model()
-        user, created = User.objects.get_or_create(id=remote_user['pennid'])
+        user, created = User.objects.get_or_create(
+            id=remote_user['pennid'],
+            defaults={'username': remote_user['username']}
+        )
 
         if created:
             user.set_unusable_password()
