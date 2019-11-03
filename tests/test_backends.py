@@ -2,6 +2,8 @@ from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from accounts.backends import LabsUserBackend
+
 
 class BackendTestCase(TestCase):
     def setUp(self):
@@ -67,3 +69,14 @@ class BackendTestCase(TestCase):
         self.assertEqual(len(self.User.objects.all()), 1)
         self.assertEqual(self.User.objects.all()[0].username, 'user')
         self.assertTrue(self.User.objects.all()[0].is_staff)
+
+    def test_custom_backend(self):
+        with self.settings(AUTHENTICATION_BACKENDS=('tests.test_backends.CustomBackend',)):
+            user = auth.authenticate(remote_user=self.remote_user)
+            self.assertEqual(user.first_name, 'Modified')
+
+
+class CustomBackend(LabsUserBackend):
+    def post_authenticate(self, user, created):
+        user.first_name = 'Modified'
+        user.save()

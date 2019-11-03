@@ -6,6 +6,10 @@ from accounts.settings import accounts_settings
 
 class LabsUserBackend(RemoteUserBackend):
     def authenticate(self, request, remote_user):
+        """
+        Authenticate a user given a dictionary of user information from
+        platform.
+        """
         if not remote_user:
             return
         User = get_user_model()
@@ -29,4 +33,14 @@ class LabsUserBackend(RemoteUserBackend):
             user.is_superuser = True
 
         user.save()
+        self.post_authenticate(user, created)
         return user if self.user_can_authenticate(user) else None
+
+    def post_authenticate(self, user, created):
+        """
+        Post Authentication method that is run after logging in a user.
+        This allows products to add custom configuration by subclassing
+        LabsUserBackend and modifying this method.
+        By default this does nothing.
+        """
+        pass
