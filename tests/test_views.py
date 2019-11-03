@@ -51,8 +51,7 @@ class CallbackViewTestCase(TestCase):
         self.User = get_user_model()
         self.mock_post = {
             'user': {
-                'major': 'Major',
-                'school': 'School',
+                'pennid': '1',
                 'first_name': 'First',
                 'last_name': 'Last',
                 'username': 'user',
@@ -70,6 +69,7 @@ class CallbackViewTestCase(TestCase):
 
     def test_inactive_user(self, mock_fetch_token, mock_post):
         self.User.objects.create_user(
+            id=1,
             username='user',
             password='secret',
             is_active=False

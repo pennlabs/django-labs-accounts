@@ -9,11 +9,9 @@ class LabsUserBackend(RemoteUserBackend):
         if not remote_user:
             return
         User = get_user_model()
-        user, created = User.objects.get_or_create(username=remote_user['username'])
+        user, created = User.objects.get_or_create(id=remote_user['pennid'])
+
         if created:
-            user.first_name = remote_user['first_name']
-            user.last_name = remote_user['last_name']
-            user.email = remote_user['email']
             user.set_unusable_password()
             user.save()
             try:
@@ -21,8 +19,14 @@ class LabsUserBackend(RemoteUserBackend):
             except TypeError:
                 user = self.configure_user(user)
 
+        # Update user fields if changed
+        for field in ['first_name', 'last_name', 'username', 'email']:
+            if getattr(user, field) is not remote_user[field]:
+                setattr(user, field, remote_user[field])
+
         if accounts_settings.ADMIN_PERMISSION in remote_user['product_permission']:
             user.is_staff = True
             user.is_superuser = True
-            user.save()
+
+        user.save()
         return user if self.user_can_authenticate(user) else None
