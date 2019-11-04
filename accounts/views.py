@@ -42,6 +42,7 @@ class CallbackView(View):
         access_token = token['access_token']
         introspect_url = accounts_settings.PLATFORM_URL + '/accounts/introspect/'
         user_props = platform.post(introspect_url, data={'token': access_token}).json()['user']
+        user_props['pennid'] = int(user_props['pennid'])
         user = auth.authenticate(request, remote_user=user_props)
         if user:
             auth.login(request, user)

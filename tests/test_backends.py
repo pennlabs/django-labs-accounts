@@ -9,7 +9,7 @@ class BackendTestCase(TestCase):
     def setUp(self):
         self.User = get_user_model()
         self.remote_user = {
-            'pennid': '1',
+            'pennid': 1,
             'first_name': 'First',
             'last_name': 'Last',
             'username': 'user',
