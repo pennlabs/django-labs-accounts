@@ -36,10 +36,10 @@ class LabsUserBackend(RemoteUserBackend):
             user.is_superuser = True
 
         user.save()
-        self.post_authenticate(user, created)
+        self.post_authenticate(user, created, remote_user)
         return user if self.user_can_authenticate(user) else None
 
-    def post_authenticate(self, user, created):
+    def post_authenticate(self, user, created, dictionary):
         """
         Post Authentication method that is run after logging in a user.
         This allows products to add custom configuration by subclassing

@@ -77,6 +77,6 @@ class BackendTestCase(TestCase):
 
 
 class CustomBackend(LabsUserBackend):
-    def post_authenticate(self, user, created):
+    def post_authenticate(self, user, created, dictionary):
         user.first_name = 'Modified'
         user.save()
