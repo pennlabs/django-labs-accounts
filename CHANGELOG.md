@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.0 (UNRELEASED)
+0.4.0 (2019-11-08)
 ------------------
 * Feature: Transition to PennIDs for authentication
 * Feature: Add additional method to run after user authentication
