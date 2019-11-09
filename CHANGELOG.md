@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.4.0 (UNRELEASED)
+------------------
+* Feature: Transition to PennIDs for authentication
+* Feature: Add additional method to run after user authentication
+
 0.3.8 (2019-10-20)
 ------------------
 * Fix: Use POST in introspect call

@@ -2,13 +2,14 @@ from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from accounts.backends import LabsUserBackend
+
 
 class BackendTestCase(TestCase):
     def setUp(self):
         self.User = get_user_model()
         self.remote_user = {
-            'major': 'Major',
-            'school': 'School',
+            'pennid': 1,
             'first_name': 'First',
             'last_name': 'Last',
             'username': 'user',
@@ -31,8 +32,17 @@ class BackendTestCase(TestCase):
         self.assertEqual(user.email, 'test@test.com')
         self.assertFalse(self.User.objects.all()[0].is_staff)
 
+    def test_update_user(self):
+        auth.authenticate(remote_user=self.remote_user)
+        self.assertEqual(len(self.User.objects.all()), 1)
+        self.remote_user['username'] = 'changed_user'
+        auth.authenticate(remote_user=self.remote_user)
+        user = self.User.objects.all()[0]
+        self.assertEqual(user.username, 'changed_user')
+
     def test_login_user(self):
         student = self.User.objects.create_user(
+            id=1,
             username='user',
             password='secret'
         )
@@ -44,6 +54,7 @@ class BackendTestCase(TestCase):
     def test_login_user_admin(self):
         self.remote_user['product_permission'] = ['example_admin']
         student = self.User.objects.create_user(
+            id=1,
             username='user',
             password='secret'
         )
@@ -58,3 +69,14 @@ class BackendTestCase(TestCase):
         self.assertEqual(len(self.User.objects.all()), 1)
         self.assertEqual(self.User.objects.all()[0].username, 'user')
         self.assertTrue(self.User.objects.all()[0].is_staff)
+
+    def test_custom_backend(self):
+        with self.settings(AUTHENTICATION_BACKENDS=('tests.test_backends.CustomBackend',)):
+            user = auth.authenticate(remote_user=self.remote_user)
+            self.assertEqual(user.first_name, 'Modified')
+
+
+class CustomBackend(LabsUserBackend):
+    def post_authenticate(self, user, created, dictionary):
+        user.first_name = 'Modified'
+        user.save()
