@@ -82,6 +82,27 @@ When developing locally with an http (not https) callback URL, it may be helpful
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = "1"
 ```
 
+## Custom post authentication
+
+If you want to customize how DLA saves user information from platform into User objects, you can subclass `accounts.backends.LabsUserBackend` and redefine the post_authenticate method. This method will be run after the user is logged in. The parameters are:
+
+* `user` the user object
+* `created` a boolean delineating if the user was just created
+* `dictionary` a dictionary of user information from platform.
+
+Then just set the `AUTHENTICATION_BACKENDS` setting to be the subclassed backend.
+
+Here is an example of a custom backend that sets every user's first name to `"Modified"`.
+
+```python
+from accounts.backends import LabsUserBackend
+
+class CustomBackend(LabsUserBackend):
+    def post_authenticate(self, user, created, dictionary):
+        user.first_name = 'Modified'
+        user.save()
+```
+
 ## Changelog
 
 See [CHANGELOG.md](https://github.com/pennlabs/django-labs-accounts/blob/master/CHANGELOG.md)
