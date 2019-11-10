@@ -70,6 +70,25 @@ class BackendTestCase(TestCase):
         self.assertEqual(self.User.objects.all()[0].username, 'user')
         self.assertTrue(self.User.objects.all()[0].is_staff)
 
+    def test_give_admin_permission(self):
+        user = auth.authenticate(remote_user=self.remote_user)
+        self.assertFalse(user.is_staff)
+        self.assertFalse(user.is_superuser)
+        self.remote_user['product_permission'] = ['example_admin']
+        user = auth.authenticate(remote_user=self.remote_user)
+        self.assertTrue(user.is_staff)
+        self.assertTrue(user.is_superuser)
+
+    def test_remove_admin_permission(self):
+        self.remote_user['product_permission'] = ['example_admin']
+        user = auth.authenticate(remote_user=self.remote_user)
+        self.assertTrue(user.is_staff)
+        self.assertTrue(user.is_superuser)
+        self.remote_user['product_permission'] = []
+        user = auth.authenticate(remote_user=self.remote_user)
+        self.assertFalse(user.is_staff)
+        self.assertFalse(user.is_superuser)
+
     def test_custom_backend(self):
         with self.settings(AUTHENTICATION_BACKENDS=('tests.test_backends.CustomBackend',)):
             user = auth.authenticate(remote_user=self.remote_user)
