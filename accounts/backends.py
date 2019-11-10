@@ -31,9 +31,15 @@ class LabsUserBackend(RemoteUserBackend):
             if getattr(user, field) is not remote_user[field]:
                 setattr(user, field, remote_user[field])
 
+        # Set or remove admin permissions
         if accounts_settings.ADMIN_PERMISSION in remote_user['product_permission']:
-            user.is_staff = True
-            user.is_superuser = True
+            if not user.is_staff:
+                user.is_staff = True
+                user.is_superuser = True
+        else:
+            if user.is_staff:
+                user.is_staff = False
+                user.is_superuser = False
 
         user.save()
         self.post_authenticate(user, created, remote_user)
