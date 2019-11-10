@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.4.1 (UNRELEASED)
+------------------
+* Feature: Update admin permissions on each login
+
 0.4.0 (2019-11-08)
 ------------------
 * Feature: Transition to PennIDs for authentication
