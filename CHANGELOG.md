@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.1 (UNRELEASED)
+0.4.1 (2019-11-10)
 ------------------
 * Feature: Update admin permissions on each login
 
