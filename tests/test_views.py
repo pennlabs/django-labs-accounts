@@ -62,7 +62,7 @@ class CallbackViewTestCase(TestCase):
         }
 
     def test_active_user(self, mock_fetch_token, mock_post):
-        mock_fetch_token.return_value = {'access_token': 'abc'}
+        mock_fetch_token.return_value = {'access_token': 'abc', 'refresh_token': '123', 'expires_in': 100}
         mock_post.return_value.json.return_value = self.mock_post
         response = self.client.get(reverse('accounts:callback'))
         self.assertRedirects(response, self.redirect, fetch_redirect_response=False)
@@ -74,7 +74,7 @@ class CallbackViewTestCase(TestCase):
             password='secret',
             is_active=False
         )
-        mock_fetch_token.return_value = {'access_token': 'abc'}
+        mock_fetch_token.return_value = {'access_token': 'abc', 'refresh_token': '123', 'expires_in': 100}
         mock_post.return_value.json.return_value = self.mock_post
         response = self.client.get(reverse('accounts:callback'))
         self.assertEqual(response.status_code, 500)

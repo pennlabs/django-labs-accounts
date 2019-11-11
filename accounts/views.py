@@ -1,5 +1,6 @@
+from django.conf import settings
 from django.contrib import auth
-from django.http import HttpResponseServerError
+from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views import View
@@ -31,6 +32,7 @@ class LoginView(View):
 
 class CallbackView(View):
     def get(self, request):
+        response = HttpResponseRedirect(request.session.pop('next'))
         state = request.session.pop('state')
         platform = OAuth2Session(accounts_settings.CLIENT_ID, redirect_uri=accounts_settings.REDIRECT_URI, state=state)
         token = platform.fetch_token(
@@ -38,15 +40,17 @@ class CallbackView(View):
             client_secret=accounts_settings.CLIENT_SECRET,
             authorization_response=request.build_absolute_uri()
         )
+
+        # Use the access token to log in the user using information from platform
         platform = OAuth2Session(accounts_settings.CLIENT_ID, token=token)
-        access_token = token['access_token']
         introspect_url = accounts_settings.PLATFORM_URL + '/accounts/introspect/'
-        user_props = platform.post(introspect_url, data={'token': access_token}).json()['user']
+        user_props = platform.post(introspect_url, data={'token': token['access_token']}).json()['user']
+        user_props['token'] = token
         user_props['pennid'] = int(user_props['pennid'])
         user = auth.authenticate(request, remote_user=user_props)
         if user:
             auth.login(request, user)
-            return redirect(request.session.pop('next'))
+            return response
         return HttpResponseServerError()
 
 

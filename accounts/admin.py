@@ -2,7 +2,27 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import reverse
 
+from accounts.models import AccessToken, RefreshToken
 from accounts.settings import accounts_settings
+
+
+class AccessTokenAdmin(admin.ModelAdmin):
+    """
+    Custom ModelAdmin for Access Tokens
+    """
+    list_display = ('token', 'user', 'expires_at',)
+
+
+class RefreshTokenAdmin(admin.ModelAdmin):
+    """
+    Custom ModelAdmin for Refresh Tokens
+    """
+    list_display = ('token', 'user',)
+
+
+# Register models to admin site
+admin.site.register(AccessToken, AccessTokenAdmin)
+admin.site.register(RefreshToken, RefreshTokenAdmin)
 
 
 class LabsAdminSite(admin.AdminSite):
