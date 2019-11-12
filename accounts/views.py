@@ -10,6 +10,9 @@ from accounts.settings import accounts_settings
 
 
 class LoginView(View):
+    """
+    Log in the user and redirect to next query parameter
+    """
     def get(self, request):
         return_to = request.GET.get('next')
         if not return_to:
@@ -31,10 +34,16 @@ class LoginView(View):
 
 
 class CallbackView(View):
+    """
+    View where the the user is redirected to from platform with the
+    query parameter code being that user's Authorization Code
+    """
     def get(self, request):
         response = HttpResponseRedirect(request.session.pop('next'))
         state = request.session.pop('state')
         platform = OAuth2Session(accounts_settings.CLIENT_ID, redirect_uri=accounts_settings.REDIRECT_URI, state=state)
+
+        # Get the user's access and refresh tokens
         token = platform.fetch_token(
             accounts_settings.PLATFORM_URL + '/accounts/token/',
             client_secret=accounts_settings.CLIENT_SECRET,
@@ -55,6 +64,9 @@ class CallbackView(View):
 
 
 class LogoutView(View):
+    """
+    Log out the user and redirect to next query parameter
+    """
     def get(self, request):
         auth.logout(request)
         return redirect(request.GET.get('next', '/'))
