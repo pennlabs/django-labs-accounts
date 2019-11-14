@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.2 (UNRELEASED)
+0.4.2 (2019-11-14)
 ------------------
 * Fix: Register models from the default django admin
 
