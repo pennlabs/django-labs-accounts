@@ -8,7 +8,10 @@ from accounts.settings import accounts_settings
 
 
 class LabsAdminSite(admin.AdminSite):
-
+    """
+    Custom admin site that redirects users to log in through platform
+    instead of logging in with a username and password
+    """
     def login(self, request, extra_context=None):
         if not request.user.is_authenticated:
             return redirect(reverse('accounts:login') + '?next=' + request.GET.get('next'))
