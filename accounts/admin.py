@@ -1,6 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth.admin import GroupAdmin, UserAdmin
-from django.contrib.auth.models import Group, User
 from django.shortcuts import redirect
 from django.urls import reverse
 
@@ -19,6 +17,10 @@ class LabsAdminSite(admin.AdminSite):
 
 
 if accounts_settings.CUSTOM_ADMIN:
-    admin.site = LabsAdminSite()
-    admin.site.register(Group, GroupAdmin)
-    admin.site.register(User, UserAdmin)
+    """
+    Replace the default admin site with a custom one to log in users through platform.
+    Also copy all registered models from the default admin site
+    """
+    labs_admin = LabsAdminSite()
+    labs_admin._registry = admin.site._registry
+    admin.site = labs_admin
