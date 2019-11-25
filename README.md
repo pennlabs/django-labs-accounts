@@ -34,6 +34,15 @@ AUTHENTICATION_BACKENDS = (
 )
 ```
 
+Add the new accounts middleware to `MIDDLEWARE`
+
+```python
+MIDDLEWARE = [
+    'accounts.middleware.OAuth2TokenMiddleware',
+    ...
+]
+```
+
 Add the following to `urls.py`
 
 ```python
