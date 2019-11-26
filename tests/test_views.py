@@ -17,6 +17,12 @@ class LoginViewTestCase(TestCase):
         response = self.client.get(reverse('accounts:login'))
         self.assertEqual(response.status_code, 400)
 
+    def test_set_next(self):
+        self.client.get(reverse('accounts:login') + '?next=/')
+        self.assertIn('next', self.client.session)
+        self.assertEqual('/', self.client.session['next'])
+        self.assertIn('state', self.client.session)
+
     def test_authenticated_user(self):
         self.User.objects.create_user(
             username='user',

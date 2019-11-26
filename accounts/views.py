@@ -17,7 +17,7 @@ class LoginView(View):
         return_to = request.GET.get('next')
         if not return_to:
             return HttpResponseBadRequest('Invalid next parameter')
-        request.session.__setitem__('next', return_to)
+        request.session['next'] = return_to
         if not request.user.is_authenticated:
             platform = OAuth2Session(
                 accounts_settings.CLIENT_ID,
@@ -28,9 +28,9 @@ class LoginView(View):
                 accounts_settings.PLATFORM_URL + '/accounts/authorize/'
             )
             response = redirect(authorization_url)
-            request.session.__setitem__('state', state)
+            request.session['state'] = state
             return response
-        return redirect(request.session.pop('next'))
+        return redirect(request.session.pop('next', '/'))
 
 
 class CallbackView(View):
