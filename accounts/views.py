@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import auth
 from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.http.response import HttpResponseBadRequest
@@ -53,13 +52,15 @@ class CallbackView(View):
         # Use the access token to log in the user using information from platform
         platform = OAuth2Session(accounts_settings.CLIENT_ID, token=token)
         introspect_url = accounts_settings.PLATFORM_URL + '/accounts/introspect/'
-        user_props = platform.post(introspect_url, data={'token': token['access_token']}).json()['user']
-        user_props['token'] = token
-        user_props['pennid'] = int(user_props['pennid'])
-        user = auth.authenticate(request, remote_user=user_props)
-        if user:
-            auth.login(request, user)
-            return response
+        request = platform.post(introspect_url, data={'token': token['access_token']})
+        if request.status_code == 200:  # Connected to platform successfully
+            user_props = request.json()['user']
+            user_props['token'] = token
+            user_props['pennid'] = int(user_props['pennid'])
+            user = auth.authenticate(request, remote_user=user_props)
+            if user:
+                auth.login(request, user)
+                return response
         return HttpResponseServerError()
 
 
