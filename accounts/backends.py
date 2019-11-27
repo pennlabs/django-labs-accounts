@@ -36,16 +36,19 @@ class LabsUserBackend(RemoteUserBackend):
                 setattr(user, field, remote_user[field])
 
         #  Update Access and Refresh Token
-        if not AccessToken.objects.filter(user=user):
-            AccessToken.objects.create(user=user, expires_at=timezone.now()).save()
-        user.accesstoken.token = remote_user['token']['access_token']
-        user.accesstoken.expires_at = timezone.now() + timedelta(seconds=remote_user['token']['expires_in'])
-        user.accesstoken.save()
-
-        if not RefreshToken.objects.filter(user=user):
-            RefreshToken.objects.create(user=user).save()
-        user.refreshtoken.token = remote_user['token']['refresh_token']
-        user.refreshtoken.save()
+        AccessToken.objects.update_or_create(
+            user=user,
+            defaults={
+                'expires_at': timezone.now() + timedelta(seconds=remote_user['token']['expires_in']),
+                'token': remote_user['token']['access_token'],
+            }
+        )
+        RefreshToken.objects.update_or_create(
+            user=user,
+            defaults={
+                'token': remote_user['token']['refresh_token'],
+            }
+        )
 
         # Set or remove admin permissions
         if accounts_settings.ADMIN_PERMISSION in remote_user['product_permission']:
