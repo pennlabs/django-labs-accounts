@@ -19,14 +19,16 @@ def authenticated_request(user, method, url,
 
     # Access token is expired. Try to refresh access token
     if user.accesstoken.expires_at < timezone.now():
-        if not refresh_access_token(user):
+        if not _refresh_access_token(user):
             return None  # Couldn't update access token
 
     # Update Headers
-    headers = headers or {}
+    headers = {} if headers is None else headers
     headers['Authorization'] = f'Bearer {user.accesstoken.token}'
 
-    # Make request
+    # Make the request
+    # We're only using a session to provide an easy wrapper to define the http method
+    # GET, POST, etc in the method call.
     s = requests.Session()
     return s.request(
         method=method,
@@ -48,10 +50,13 @@ def authenticated_request(user, method, url,
     )
 
 
-def refresh_access_token(user):
+def _refresh_access_token(user):
     """
     Helper method to update a user's access token. Should be used when a user's
-    access token has expired, but still has a valid refresh token
+    access token has expired, but still has a valid refresh token.
+
+    Returns:
+        bool: true if the access token is updated, false otherwise.
     """
     body = {
         'grant_type': 'refresh_token',
