@@ -21,7 +21,8 @@ class AuthenticatedRequestTestCase(TestCase):
     @patch('accounts.ipc._refresh_access_token')
     def test_update_refresh_token_fail(self, mock_refresh):
         mock_refresh.return_value = False
-        self.assertFalse(authenticated_request(self.user, None, None))
+        response = authenticated_request(self.user, None, None)
+        self.assertEqual(403, response.status_code)
 
     @patch('accounts.ipc.requests.Session')
     def test_authorization_header(self, mock_session):

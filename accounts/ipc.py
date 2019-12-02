@@ -20,7 +20,11 @@ def authenticated_request(user, method, url,
     # Access token is expired. Try to refresh access token
     if user.accesstoken.expires_at < timezone.now():
         if not _refresh_access_token(user):
-            return None  # Couldn't update access token
+            # Couldn't update the user's access token. Return a response with a 403 status code
+            # as if the user didn't have access to the requested resource
+            response = requests.models.Response
+            response.status_code = 403
+            return response
 
     # Update Headers
     headers = {} if headers is None else headers
