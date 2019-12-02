@@ -24,8 +24,10 @@ class AuthenticatedRequestTestCase(TestCase):
         response = authenticated_request(self.user, None, None)
         self.assertEqual(403, response.status_code)
 
+    @patch('accounts.ipc._refresh_access_token')
     @patch('accounts.ipc.requests.Session')
-    def test_authorization_header(self, mock_session):
+    def test_authorization_header(self, mock_session, mock_refresh):
+        mock_refresh.return_value = True
         header = {'abc': '123'}
         authenticated_request(self.user, None, None, headers=header)
         header['Authorization'] = f'Bearer {self.token}'
@@ -56,6 +58,11 @@ class RefreshAccessTokenTestCase(TestCase):
         self.assertTrue(diff < self.user.accesstoken.expires_at)
         self.assertEqual(self.valid_response['access_token'], self.user.accesstoken.token)
         self.assertEqual(self.valid_response['refresh_token'], self.user.refreshtoken.token)
+
+    def test_invalid_response(self, mock_post):
+        mock_post.return_value.status_code = 403
+        value = _refresh_access_token(self.user)
+        self.assertFalse(value)
 
     def test_exception_occurred(self, mock_post):
         mock_post.side_effect = requests.exceptions.RequestException

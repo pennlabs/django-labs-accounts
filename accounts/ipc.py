@@ -84,6 +84,7 @@ def _refresh_access_token(user):
             user.refreshtoken.token = data['refresh_token']
             user.refreshtoken.save()
 
+            return True
     except requests.exceptions.RequestException:  # Can't connect to platform
         return False
-    return True
+    return False
