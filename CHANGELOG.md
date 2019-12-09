@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.0 (UNRELEASED)
+0.5.0 (2019-12-09)
 ------------------
 * Feature: IPC receiving middleware
 * Feature: IPC sending helper method
