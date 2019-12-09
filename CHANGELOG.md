@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.5.0 (UNRELEASED)
+------------------
+* Feature: IPC receiving middleware
+* Feature: IPC sending helper method
+* Feature: Better documentation
+* Fix: Better error checking
+
 0.4.2 (2019-11-14)
 ------------------
 * Fix: Register models from the default django admin

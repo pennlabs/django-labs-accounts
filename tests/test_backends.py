@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from accounts.backends import LabsUserBackend
+from accounts.models import AccessToken, RefreshToken
 
 
 class BackendTestCase(TestCase):
@@ -15,7 +16,12 @@ class BackendTestCase(TestCase):
             'username': 'user',
             'email': 'test@test.com',
             'affiliation': [],
-            'product_permission': []
+            'product_permission': [],
+            'token': {
+                'access_token': 'abc',
+                'refresh_token': '123',
+                'expires_in': 100,
+            },
         }
 
     def test_invalid_remote_user(self):
@@ -31,6 +37,10 @@ class BackendTestCase(TestCase):
         self.assertEqual(user.last_name, 'Last')
         self.assertEqual(user.email, 'test@test.com')
         self.assertFalse(self.User.objects.all()[0].is_staff)
+        self.assertEqual(len(AccessToken.objects.all()), 1)
+        self.assertEqual(len(RefreshToken.objects.all()), 1)
+        self.assertEqual(self.remote_user['token']['access_token'], user.accesstoken.token)
+        self.assertEqual(self.remote_user['token']['refresh_token'], user.refreshtoken.token)
 
     def test_update_user(self):
         auth.authenticate(remote_user=self.remote_user)
@@ -39,6 +49,10 @@ class BackendTestCase(TestCase):
         auth.authenticate(remote_user=self.remote_user)
         user = self.User.objects.all()[0]
         self.assertEqual(user.username, 'changed_user')
+        self.assertEqual(len(AccessToken.objects.all()), 1)
+        self.assertEqual(len(RefreshToken.objects.all()), 1)
+        self.assertEqual(self.remote_user['token']['access_token'], user.accesstoken.token)
+        self.assertEqual(self.remote_user['token']['refresh_token'], user.refreshtoken.token)
 
     def test_login_user(self):
         student = self.User.objects.create_user(

@@ -1,6 +1,10 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
+from django.utils import timezone
 
+from accounts.models import AccessToken, RefreshToken
 from accounts.settings import accounts_settings
 
 
@@ -30,6 +34,21 @@ class LabsUserBackend(RemoteUserBackend):
         for field in ['first_name', 'last_name', 'username', 'email']:
             if getattr(user, field) is not remote_user[field]:
                 setattr(user, field, remote_user[field])
+
+        #  Update Access and Refresh Token
+        AccessToken.objects.update_or_create(
+            user=user,
+            defaults={
+                'expires_at': timezone.now() + timedelta(seconds=remote_user['token']['expires_in']),
+                'token': remote_user['token']['access_token'],
+            }
+        )
+        RefreshToken.objects.update_or_create(
+            user=user,
+            defaults={
+                'token': remote_user['token']['refresh_token'],
+            }
+        )
 
         # Set or remove admin permissions
         if accounts_settings.ADMIN_PERMISSION in remote_user['product_permission']:

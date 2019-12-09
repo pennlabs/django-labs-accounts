@@ -34,6 +34,16 @@ AUTHENTICATION_BACKENDS = (
 )
 ```
 
+Add the new accounts middleware to `MIDDLEWARE`. Note the middleware does not need to be at the top of the list, but should be placed above the default Django middleware.
+
+```python
+MIDDLEWARE = [
+    ...
+    'accounts.middleware.OAuth2TokenMiddleware',
+    ...
+]
+```
+
 Add the following to `urls.py`
 
 ```python

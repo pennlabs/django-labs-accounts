@@ -1,7 +1,7 @@
 import os
 import sys
 
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.install import install
 
 
@@ -26,7 +26,7 @@ class VerifyVersionCommand(install):
 setup(
     name='django-labs-accounts',
     version=VERSION,
-    packages=['accounts'],
+    packages=find_packages(exclude=['tests']),
     url='https://github.com/pennlabs/django-labs-accounts',
     project_urls={
         'Changelog': ('https://github.com/pennlabs/django-labs-accounts/blob/master/CHANGELOG.md')
@@ -39,16 +39,17 @@ setup(
     long_description_content_type='text/markdown',
     install_requires=[
         'django>=2.0.0',
-        'requests-oauthlib>=1.2.0'
+        'requests-oauthlib>=1.2.0',
+        'requests>=2.0.0',
     ],
     classifiers=[
         'Framework :: Django',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     cmdclass={
         'verify': VerifyVersionCommand,
     }
