@@ -52,9 +52,9 @@ class CallbackView(View):
         # Use the access token to log in the user using information from platform
         platform = OAuth2Session(accounts_settings.CLIENT_ID, token=token)
         introspect_url = accounts_settings.PLATFORM_URL + '/accounts/introspect/'
-        request = platform.post(introspect_url, data={'token': token['access_token']})
-        if request.status_code == 200:  # Connected to platform successfully
-            user_props = request.json()['user']
+        platform_request = platform.post(introspect_url, data={'token': token['access_token']})
+        if platform_request.status_code == 200:  # Connected to platform successfully
+            user_props = platform_request.json()['user']
             user_props['token'] = token
             user_props['pennid'] = int(user_props['pennid'])
             user = auth.authenticate(request, remote_user=user_props)
