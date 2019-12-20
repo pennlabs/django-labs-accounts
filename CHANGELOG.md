@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.5.1 (2019-12-20)
+------------------
+* Fix: requests typo
+
 0.5.0 (2019-12-09)
 ------------------
 * Feature: IPC receiving middleware
