@@ -5,4 +5,4 @@ from accounts.apps import AccountsConfig
 
 class AppsTestCase(TestCase):
     def test_apps(self):
-        self.assertEqual(AccountsConfig.name, 'accounts')
+        self.assertEqual(AccountsConfig.name, "accounts")

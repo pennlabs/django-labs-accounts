@@ -18,8 +18,7 @@ class LabsUserBackend(RemoteUserBackend):
             return
         User = get_user_model()
         user, created = User.objects.get_or_create(
-            id=remote_user['pennid'],
-            defaults={'username': remote_user['username']}
+            id=remote_user["pennid"], defaults={"username": remote_user["username"]}
         )
 
         if created:
@@ -31,7 +30,7 @@ class LabsUserBackend(RemoteUserBackend):
                 user = self.configure_user(user)
 
         # Update user fields if changed
-        for field in ['first_name', 'last_name', 'username', 'email']:
+        for field in ["first_name", "last_name", "username", "email"]:
             if getattr(user, field) is not remote_user[field]:
                 setattr(user, field, remote_user[field])
 
@@ -39,19 +38,17 @@ class LabsUserBackend(RemoteUserBackend):
         AccessToken.objects.update_or_create(
             user=user,
             defaults={
-                'expires_at': timezone.now() + timedelta(seconds=remote_user['token']['expires_in']),
-                'token': remote_user['token']['access_token'],
-            }
+                "expires_at": timezone.now()
+                + timedelta(seconds=remote_user["token"]["expires_in"]),
+                "token": remote_user["token"]["access_token"],
+            },
         )
         RefreshToken.objects.update_or_create(
-            user=user,
-            defaults={
-                'token': remote_user['token']['refresh_token'],
-            }
+            user=user, defaults={"token": remote_user["token"]["refresh_token"]}
         )
 
         # Set or remove admin permissions
-        if accounts_settings.ADMIN_PERMISSION in remote_user['product_permission']:
+        if accounts_settings.ADMIN_PERMISSION in remote_user["product_permission"]:
             if not user.is_staff:
                 user.is_staff = True
                 user.is_superuser = True
