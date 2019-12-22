@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.5.2 (2019-12-22)
+------------------
+* Test release (no changes from 0.5.1)
+
 0.5.1 (2019-12-20)
 ------------------
 * Fix: requests typo
