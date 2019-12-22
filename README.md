@@ -1,13 +1,13 @@
 # Django Labs Accounts
 
 [![CircleCI](https://circleci.com/gh/pennlabs/django-labs-accounts.svg?style=shield)](https://circleci.com/gh/pennlabs/django-labs-accounts)
-[![Coverage Status](https://coveralls.io/repos/github/pennlabs/django-labs-accounts/badge.svg?branch=master)](https://coveralls.io/github/pennlabs/django-labs-accounts?branch=master)
+[![Coverage Status](https://codecov.io/gh/pennlabs/django-labs-accounts/branch/master/graph/badge.svg)](https://codecov.io/gh/pennlabs/django-labs-accounts)
 [![PyPi Package](https://img.shields.io/pypi/v/django-labs-accounts.svg)](https://pypi.org/project/django-labs-accounts/)
 
 ## Requirements
 
 * Python 3.5+
-* Django 2.0+
+* Django 2.1+
 
 ## Installation
 

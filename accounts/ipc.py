@@ -6,10 +6,25 @@ from django.utils import timezone
 from accounts.settings import accounts_settings
 
 
-def authenticated_request(user, method, url,
-                          params=None, data=None, headers=None, cookies=None, files=None,
-                          auth=None, timeout=None, allow_redirects=True, proxies=None,
-                          hooks=None, stream=None, verify=None, cert=None, json=None):
+def authenticated_request(
+    user,
+    method,
+    url,
+    params=None,
+    data=None,
+    headers=None,
+    cookies=None,
+    files=None,
+    auth=None,
+    timeout=None,
+    allow_redirects=True,
+    proxies=None,
+    hooks=None,
+    stream=None,
+    verify=None,
+    cert=None,
+    json=None,
+):
     """
     Helper method to make an authenticated request using the user's access token
     NOTE be ABSOLUTELY sure you only make a request to Penn Labs products, otherwise
@@ -28,7 +43,7 @@ def authenticated_request(user, method, url,
 
     # Update Headers
     headers = {} if headers is None else headers
-    headers['Authorization'] = f'Bearer {user.accesstoken.token}'
+    headers["Authorization"] = f"Bearer {user.accesstoken.token}"
 
     # Make the request
     # We're only using a session to provide an easy wrapper to define the http method
@@ -63,25 +78,22 @@ def _refresh_access_token(user):
         bool: true if the access token is updated, false otherwise.
     """
     body = {
-        'grant_type': 'refresh_token',
-        'client_id': accounts_settings.CLIENT_ID,
-        'client_secret': accounts_settings.CLIENT_SECRET,
-        'refresh_token': user.refreshtoken.token,
+        "grant_type": "refresh_token",
+        "client_id": accounts_settings.CLIENT_ID,
+        "client_secret": accounts_settings.CLIENT_SECRET,
+        "refresh_token": user.refreshtoken.token,
     }
     try:
-        data = requests.post(
-            url=accounts_settings.PLATFORM_URL + '/accounts/token/',
-            data=body
-        )
+        data = requests.post(url=accounts_settings.PLATFORM_URL + "/accounts/token/", data=body)
         if data.status_code == 200:  # Access token refreshed successfully
             data = data.json()
             # Update Access token
-            user.accesstoken.token = data['access_token']
-            user.accesstoken.expires_at = timezone.now() + timedelta(seconds=data['expires_in'])
+            user.accesstoken.token = data["access_token"]
+            user.accesstoken.expires_at = timezone.now() + timedelta(seconds=data["expires_in"])
             user.accesstoken.save()
 
             # Update Refresh Token
-            user.refreshtoken.token = data['refresh_token']
+            user.refreshtoken.token = data["refresh_token"]
             user.refreshtoken.save()
 
             return True
