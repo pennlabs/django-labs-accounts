@@ -119,4 +119,4 @@ See [CHANGELOG.md](https://github.com/pennlabs/django-labs-accounts/blob/master/
 
 ## License
 
-See [LICENSE.md](https://github.com/pennlabs/django-labs-accounts/blob/master/LICENSE.md)
+See [LICENSE](https://github.com/pennlabs/django-labs-accounts/blob/master/LICENSE)
