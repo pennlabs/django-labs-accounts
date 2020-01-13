@@ -3,9 +3,17 @@ from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views import View
+from django.urls import reverse
 from requests_oauthlib import OAuth2Session
 
 from accounts.settings import accounts_settings
+
+
+def get_redirect_uri(request):
+    """
+    Determine the redirect URI using the request.
+    """
+    return request.build_absolute_uri(reverse("callback"))
 
 
 class LoginView(View):
@@ -22,7 +30,7 @@ class LoginView(View):
             platform = OAuth2Session(
                 accounts_settings.CLIENT_ID,
                 scope=accounts_settings.SCOPE,
-                redirect_uri=accounts_settings.REDIRECT_URI,
+                redirect_uri=get_redirect_uri(request),
             )
             authorization_url, state = platform.authorization_url(
                 accounts_settings.PLATFORM_URL + "/accounts/authorize/"
@@ -43,7 +51,7 @@ class CallbackView(View):
         response = HttpResponseRedirect(request.session.pop("next"))
         state = request.session.pop("state")
         platform = OAuth2Session(
-            accounts_settings.CLIENT_ID, redirect_uri=accounts_settings.REDIRECT_URI, state=state
+            accounts_settings.CLIENT_ID, redirect_uri=get_redirect_uri(request), state=state
         )
 
         # Get the user's access and refresh tokens
