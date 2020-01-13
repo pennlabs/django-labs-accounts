@@ -13,7 +13,7 @@ def get_redirect_uri(request):
     """
     Determine the redirect URI using the request.
     """
-    return request.build_absolute_uri(reverse("callback"))
+    return request.build_absolute_uri(reverse("accounts:callback"))
 
 
 class LoginView(View):
