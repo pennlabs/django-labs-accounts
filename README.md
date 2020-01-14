@@ -64,6 +64,7 @@ Example:
 PLATFORM_ACCOUNTS = {
     'CLIENT_ID': 'id',
     'CLIENT_SECRET': 'secret',
+    'REDIRECT_URI': 'example',
     'ADMIN_PERMISSION': 'example_admin'
     'CUSTOM_ADMIN': True
 }
@@ -74,6 +75,8 @@ The available settings are:
 `CLIENT_ID` the client ID to connect to platform with. Defaults to `LABS_CLIENT_ID` environment variable.
 
 `CLIENT_SECRET` the client secret to connect to platform with. Defaults to `LABS_CLIENT_SECRET` environment variable.
+
+`REDIRECT_URI` the redirect uri to send to platform. Defaults to first the `LABS_REDIRECT_URI` environment variable and then generating the value from the request object.
 
 `SCOPE` the scope for this applications tokens. Must include `introspection`. Defaults to `['read', 'introspection']`.
 

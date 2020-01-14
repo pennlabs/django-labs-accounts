@@ -8,6 +8,7 @@ USER_SETTINGS = getattr(settings, "PLATFORM_ACCOUNTS", {})
 DEFAULTS = {
     "CLIENT_ID": os.environ.get("LABS_CLIENT_ID"),
     "CLIENT_SECRET": os.environ.get("LABS_CLIENT_SECRET"),
+    "REDIRECT_URI": os.environ.get("LABS_REDIRECT_URI"),
     "SCOPE": ["read", "introspection"],
     "PLATFORM_URL": "https://platform.pennlabs.org",
     "ADMIN_PERMISSION": "example_admin",

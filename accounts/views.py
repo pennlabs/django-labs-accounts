@@ -11,8 +11,10 @@ from accounts.settings import accounts_settings
 
 def get_redirect_uri(request):
     """
-    Determine the redirect URI using the request.
+    Determine the redirect URI using either an environment variable or the request.
     """
+    if accounts_settings.REDIRECT_URI:
+        return accounts_settings.REDIRECT_URI
     return request.build_absolute_uri(reverse("accounts:callback"))
 
 
