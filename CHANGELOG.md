@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.5.3 (2019-12-22)
+------------------
+* Auto generate REDIRECT_URI if not provided
+
 0.5.2 (2019-12-22)
 ------------------
 * Test release (no changes from 0.5.1)
