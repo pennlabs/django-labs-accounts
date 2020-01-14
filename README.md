@@ -76,7 +76,7 @@ The available settings are:
 
 `CLIENT_SECRET` the client secret to connect to platform with. Defaults to `LABS_CLIENT_SECRET` environment variable.
 
-`REDIRECT_URI` the redirect uri to send to platform. Defaults to `LABS_REDIRECT_URI` environment variable.
+`REDIRECT_URI` the redirect uri to send to platform. Defaults to first the `LABS_REDIRECT_URI` environment variable and then generating the value from the request object.
 
 `SCOPE` the scope for this applications tokens. Must include `introspection`. Defaults to `['read', 'introspection']`.
 
