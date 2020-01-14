@@ -2,8 +2,8 @@ from django.contrib import auth
 from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect
-from django.views import View
 from django.urls import reverse
+from django.views import View
 from requests_oauthlib import OAuth2Session
 
 from accounts.settings import accounts_settings
