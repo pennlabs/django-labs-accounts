@@ -65,9 +65,9 @@ class CallbackViewTestCase(TestCase):
         session["next"] = self.redirect
         session.save()
         self.User = get_user_model()
-        self.mock_post = {
+        self.mock_post = {  # Response from introspect
             "user": {
-                "pennid": "1",
+                "pennid": 1,
                 "first_name": "First",
                 "last_name": "Last",
                 "username": "user",
@@ -78,7 +78,7 @@ class CallbackViewTestCase(TestCase):
         }
 
     def test_active_user(self, mock_fetch_token, mock_post):
-        mock_fetch_token.return_value = {
+        mock_fetch_token.return_value = {  # Response from token
             "access_token": "abc",
             "refresh_token": "123",
             "expires_in": 100,

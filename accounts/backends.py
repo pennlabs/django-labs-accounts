@@ -9,7 +9,7 @@ from accounts.settings import accounts_settings
 
 
 class LabsUserBackend(RemoteUserBackend):
-    def authenticate(self, request, remote_user):
+    def authenticate(self, request, remote_user, tokens=True):
         """
         Authenticate a user given a dictionary of user information from
         platform.
@@ -34,18 +34,19 @@ class LabsUserBackend(RemoteUserBackend):
             if getattr(user, field) is not remote_user[field]:
                 setattr(user, field, remote_user[field])
 
-        #  Update Access and Refresh Token
-        AccessToken.objects.update_or_create(
-            user=user,
-            defaults={
-                "expires_at": timezone.now()
-                + timedelta(seconds=remote_user["token"]["expires_in"]),
-                "token": remote_user["token"]["access_token"],
-            },
-        )
-        RefreshToken.objects.update_or_create(
-            user=user, defaults={"token": remote_user["token"]["refresh_token"]}
-        )
+        #  Update Access and Refresh Token if desired
+        if tokens:
+            AccessToken.objects.update_or_create(
+                user=user,
+                defaults={
+                    "expires_at": timezone.now()
+                    + timedelta(seconds=remote_user["token"]["expires_in"]),
+                    "token": remote_user["token"]["access_token"],
+                },
+            )
+            RefreshToken.objects.update_or_create(
+                user=user, defaults={"token": remote_user["token"]["refresh_token"]}
+            )
 
         # Set or remove admin permissions
         if accounts_settings.ADMIN_PERMISSION in remote_user["product_permission"]:

@@ -70,7 +70,6 @@ class CallbackView(View):
         if platform_request.status_code == 200:  # Connected to platform successfully
             user_props = platform_request.json()["user"]
             user_props["token"] = token
-            user_props["pennid"] = int(user_props["pennid"])
             user = auth.authenticate(request, remote_user=user_props)
             if user:
                 auth.login(request, user)

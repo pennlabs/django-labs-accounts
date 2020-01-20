@@ -17,7 +17,19 @@ class OAuth2TokenMiddlewareTestCase(TestCase):
         self.request.user = AnonymousUser
         self.middleware = OAuth2TokenMiddleware(Mock())
         self.user = get_user_model().objects.create(id=123, username="username")
-        self.valid_response = {"user": {"pennid": "123"}}
+        self.valid_response = {  # Response from introspect
+            "exp": 1123,
+            "user": {
+                "pennid": 123,
+                "first_name": "first",
+                "last_name": "last",
+                "username": "abc",
+                "email": "test@test.com",
+                "affiliation": [],
+                "product_permission": [],
+                "token": {"access_token": "abc", "refresh_token": "123", "expires_in": 100},
+            },
+        }
 
     def test_no_authorization_header(self, mock_request):
         self.middleware(self.request)
@@ -48,11 +60,12 @@ class OAuth2TokenMiddlewareTestCase(TestCase):
 
     def test_authorization_header_valid_user_no_exists(self, mock_request):
         mock_request.return_value.status_code = 200
-        self.valid_response["user"]["pennid"] = "456"
+        self.valid_response["user"]["pennid"] = 456
         mock_request.return_value.json.return_value = self.valid_response
         self.request.META["HTTP_AUTHORIZATION"] = "Bearer abc123"
         self.middleware(self.request)
-        self.assertEqual(AnonymousUser, self.request.user)
+        user = get_user_model().objects.get(id=self.valid_response["user"]["pennid"])
+        self.assertEqual(user, self.request.user)
 
     def test_authorization_header_valid_connection_error(self, mock_request):
         mock_request.side_effect = requests.exceptions.RequestException
@@ -66,7 +79,19 @@ class TestViewTestCase(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(id=123, username="username")
         self.headers = {}
-        self.valid_response = {"user": {"pennid": "123"}}
+        self.valid_response = {  # Response from introspect
+            "exp": 1123,
+            "user": {
+                "pennid": 123,
+                "first_name": "first",
+                "last_name": "last",
+                "username": "abc",
+                "email": "test@test.com",
+                "affiliation": [],
+                "product_permission": [],
+                "token": {"access_token": "abc", "refresh_token": "123", "expires_in": 100},
+            },
+        }
 
     def test_no_authorization_header(self, mock_request):
         response = self.client.get(reverse("test"), **self.headers)
