@@ -1,7 +1,11 @@
 Changelog
 =========
 
-0.5.3 (2019-12-22)
+0.5.4 (2020-01-20)
+------------------
+* Create a user if one doesn't exist when receiving an IPC call
+
+0.5.3 (2020-01-13)
 ------------------
 * Auto generate REDIRECT_URI if not provided
 
