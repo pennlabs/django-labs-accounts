@@ -1,7 +1,7 @@
 import requests
 from django.contrib import auth
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseServerError
 
 from accounts.settings import accounts_settings
 
@@ -44,7 +44,7 @@ class OAuth2TokenMiddleware:
                         if user:  # User authenticated successfully
                             request.user = user
                         else:  # Error occurred
-                            return HttpResponseForbidden()
+                            return HttpResponseServerError()
                     else:  # Access token is invalid
                         return HttpResponseForbidden()
                 except requests.exceptions.RequestException:  # Can't connect to platform

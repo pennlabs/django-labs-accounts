@@ -3,6 +3,7 @@ from unittest.mock import Mock, patch
 import requests
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.http import HttpResponseServerError
 from django.test import TestCase
 from django.urls import reverse
 
@@ -133,3 +134,12 @@ class TestViewTestCase(TestCase):
         self.headers["HTTP_AUTHORIZATION"] = "Bearer abc123"
         response = self.client.get(reverse("test"), **self.headers)
         self.assertEqual(403, response.status_code)
+
+    @patch("accounts.middleware.auth.authenticate")
+    def test_authorization_header_valid_server_error(self, mock_authenticate, mock_request):
+        mock_authenticate.return_value = None
+        mock_request.return_value.status_code = 200
+        mock_request.return_value.json.return_value = self.valid_response
+        self.headers["HTTP_AUTHORIZATION"] = "Bearer abc123"
+        response = self.client.get(reverse("test"), **self.headers)
+        self.assertEqual(500, response.status_code)
