@@ -1,6 +1,7 @@
 import requests
+from django.contrib import auth
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseServerError
 
 from accounts.settings import accounts_settings
 
@@ -25,16 +26,25 @@ class OAuth2TokenMiddleware:
                 body = {"token": token}
                 headers = {"Authorization": "Bearer {}".format(token)}
                 try:
-                    data = requests.post(
+                    platform_request = requests.post(
                         url=accounts_settings.PLATFORM_URL + "/accounts/introspect/",
                         headers=headers,
                         data=body,
                     )
-                    if data.status_code == 200:  # Access token is valid
-                        data = data.json()
-                        user = User.objects.filter(id=int(data["user"]["pennid"]))
-                        if len(user) == 1:  # User has an account on this product
-                            request.user = user.first()
+                    if platform_request.status_code == 200:  # Access token is valid
+                        json = platform_request.json()
+                        user_props = json["user"]
+                        # TODO: maybe update access token if a local one does not exist
+                        # user_props["token"] = {
+                        #     "access_token": token,
+                        #     "refresh_token": "",
+                        #     "expires_in": json["exp"] - int(timezone.now().timestamp()),
+                        # }
+                        user = auth.authenticate(remote_user=user_props, tokens=False)
+                        if user:  # User authenticated successfully
+                            request.user = user
+                        else:  # Error occurred
+                            return HttpResponseServerError()
                     else:  # Access token is invalid
                         return HttpResponseForbidden()
                 except requests.exceptions.RequestException:  # Can't connect to platform
