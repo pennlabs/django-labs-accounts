@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.6.0 (2020-02-11)
+------------------
+* Restrict redirects to be relative
+
 0.5.4 (2020-01-20)
 ------------------
 * Create a user if one doesn't exist when receiving an IPC call
