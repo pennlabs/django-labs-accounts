@@ -1,5 +1,5 @@
 from django.contrib import auth
-from django.http import HttpResponseRedirect, HttpResponseServerError
+from django.http import HttpResponseServerError
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -24,8 +24,8 @@ class LoginView(View):
     """
 
     def get(self, request):
-        return_to = request.GET.get("next")
-        if not return_to:
+        return_to = request.GET.get("next", "/")
+        if not return_to.startswith("/"):
             return HttpResponseBadRequest("Invalid next parameter")
         request.session["next"] = return_to
         if not request.user.is_authenticated:
@@ -40,7 +40,7 @@ class LoginView(View):
             response = redirect(authorization_url)
             request.session["state"] = state
             return response
-        return redirect(request.session.pop("next", "/"))
+        return redirect(return_to)
 
 
 class CallbackView(View):
@@ -50,7 +50,9 @@ class CallbackView(View):
     """
 
     def get(self, request):
-        response = HttpResponseRedirect(request.session.pop("next"))
+        return_to = request.session.pop("next", "/")
+        if not return_to.startswith("/"):
+            return HttpResponseBadRequest("Invalid next parameter")
         state = request.session.pop("state")
         platform = OAuth2Session(
             accounts_settings.CLIENT_ID, redirect_uri=get_redirect_uri(request), state=state
@@ -73,7 +75,7 @@ class CallbackView(View):
             user = auth.authenticate(request, remote_user=user_props)
             if user:
                 auth.login(request, user)
-                return response
+                return redirect(return_to)
         return HttpResponseServerError()
 
 
@@ -84,4 +86,7 @@ class LogoutView(View):
 
     def get(self, request):
         auth.logout(request)
-        return redirect(request.GET.get("next", "/"))
+        return_to = request.GET.get("next", "/")
+        if not return_to.startswith("/"):
+            return HttpResponseBadRequest("Invalid next parameter")
+        return redirect(return_to)

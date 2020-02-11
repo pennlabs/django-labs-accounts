@@ -113,6 +113,10 @@ class CustomBackend(LabsUserBackend):
         user.save()
 ```
 
+## Use in Production
+
+DLA and Penn Labs' templates are set up so that no configuration is needed to run in development. However, in production a client ID and client secret need to be set. These values should be set in vault. Contact platform for both credentials and any questions you have.
+
 ## Changelog
 
 See [CHANGELOG.md](https://github.com/pennlabs/django-labs-accounts/blob/master/CHANGELOG.md)
