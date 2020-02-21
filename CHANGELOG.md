@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.1 (UNRELEASED)
+0.6.1 (2020-02-21)
 ------------------
 * Refactor user permissions with updated Platform
 * Add group syncing
