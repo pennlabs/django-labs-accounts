@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
+from django.contrib.auth.models import Group
 from django.utils import timezone
 
 from accounts.models import AccessToken, RefreshToken
@@ -49,7 +50,7 @@ class LabsUserBackend(RemoteUserBackend):
             )
 
         # Set or remove admin permissions
-        if accounts_settings.ADMIN_PERMISSION in remote_user["product_permission"]:
+        if accounts_settings.ADMIN_PERMISSION in remote_user["user_permissions"]:
             if not user.is_staff:
                 user.is_staff = True
                 user.is_superuser = True
@@ -57,6 +58,12 @@ class LabsUserBackend(RemoteUserBackend):
             if user.is_staff:
                 user.is_staff = False
                 user.is_superuser = False
+
+        # Update groups
+        for group_name in remote_user["groups"]:
+            group, _ = Group.objects.get_or_create(name=group_name)
+            if group not in user.groups.all():
+                user.groups.add(group)
 
         user.save()
         self.post_authenticate(user, created, remote_user)
