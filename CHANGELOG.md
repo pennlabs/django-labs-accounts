@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.0 (UNRELEASED)
+0.6.1 (UNRELEASED)
 ------------------
 * Refactor user permissions with updated Platform
 * Add group syncing
