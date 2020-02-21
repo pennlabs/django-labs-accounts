@@ -71,7 +71,8 @@ class CallbackViewTestCase(TestCase):
                 "username": "user",
                 "email": "test@test.com",
                 "affiliation": [],
-                "product_permission": [],
+                "user_permissions": [],
+                "groups": ["student", "member"],
             }
         }
 

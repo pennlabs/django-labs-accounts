@@ -26,7 +26,8 @@ class OAuth2TokenMiddlewareTestCase(TestCase):
                 "username": "abc",
                 "email": "test@test.com",
                 "affiliation": [],
-                "product_permission": [],
+                "user_permissions": [],
+                "groups": ["student", "member"],
                 "token": {"access_token": "abc", "refresh_token": "123", "expires_in": 100},
             },
         }
@@ -88,7 +89,8 @@ class TestViewTestCase(TestCase):
                 "username": "abc",
                 "email": "test@test.com",
                 "affiliation": [],
-                "product_permission": [],
+                "user_permissions": [],
+                "groups": ["student", "member"],
                 "token": {"access_token": "abc", "refresh_token": "123", "expires_in": 100},
             },
         }
