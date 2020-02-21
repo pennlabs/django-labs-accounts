@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.6.0 (UNRELEASED)
+------------------
+* Refactor user permissions with updated Platform
+* Add group syncing
+
 0.6.0 (2020-02-11)
 ------------------
 * Restrict redirects to be relative
