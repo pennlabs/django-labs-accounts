@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.7.0 (2020-07-28)
+------------------
+* Add sentry logging
+* Add failback default with next parameters
+
 0.6.1 (2020-02-21)
 ------------------
 * Refactor user permissions with updated Platform
