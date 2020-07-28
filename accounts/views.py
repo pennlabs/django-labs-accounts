@@ -9,6 +9,15 @@ from requests_oauthlib import OAuth2Session
 from accounts.settings import accounts_settings
 
 
+def invalid_next(return_to):
+    try:
+        from sentry_sdk import capture_message
+
+        capture_message(f"Invalid next parameter: '{return_to}'", level="error")
+    except ImportError:
+        pass
+
+
 def get_redirect_uri(request):
     """
     Determine the redirect URI using either an environment variable or the request.
@@ -26,12 +35,7 @@ class LoginView(View):
     def get(self, request):
         return_to = request.GET.get("next", "/")
         if not return_to.startswith("/"):
-            try:
-                from sentry_sdk import capture_message
-
-                capture_message(f"Invalid next parameter: {return_to}", level="error")
-            except ImportError:
-                pass
+            invalid_next(return_to)
             return HttpResponseBadRequest("Invalid next parameter")
         request.session["next"] = return_to
         if not request.user.is_authenticated:
@@ -58,6 +62,7 @@ class CallbackView(View):
     def get(self, request):
         return_to = request.session.pop("next", "/")
         if not return_to.startswith("/"):
+            invalid_next(return_to)
             return HttpResponseBadRequest("Invalid next parameter")
         state = request.session.pop("state")
         platform = OAuth2Session(
@@ -94,5 +99,6 @@ class LogoutView(View):
         auth.logout(request)
         return_to = request.GET.get("next", "/")
         if not return_to.startswith("/"):
+            invalid_next(return_to)
             return HttpResponseBadRequest("Invalid next parameter")
         return redirect(return_to)
