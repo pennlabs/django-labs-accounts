@@ -1,12 +1,20 @@
 from django.contrib import auth
 from django.http import HttpResponseServerError
-from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import View
 from requests_oauthlib import OAuth2Session
 
 from accounts.settings import accounts_settings
+
+
+def invalid_next(return_to):
+    try:
+        from sentry_sdk import capture_message
+
+        capture_message(f"Invalid next parameter: '{return_to}'", level="error")
+    except ImportError:
+        pass
 
 
 def get_redirect_uri(request):
@@ -26,7 +34,8 @@ class LoginView(View):
     def get(self, request):
         return_to = request.GET.get("next", "/")
         if not return_to.startswith("/"):
-            return HttpResponseBadRequest("Invalid next parameter")
+            invalid_next(return_to)
+            return_to = "/"
         request.session["next"] = return_to
         if not request.user.is_authenticated:
             platform = OAuth2Session(
@@ -52,7 +61,8 @@ class CallbackView(View):
     def get(self, request):
         return_to = request.session.pop("next", "/")
         if not return_to.startswith("/"):
-            return HttpResponseBadRequest("Invalid next parameter")
+            invalid_next(return_to)
+            return_to = "/"
         state = request.session.pop("state")
         platform = OAuth2Session(
             accounts_settings.CLIENT_ID, redirect_uri=get_redirect_uri(request), state=state
@@ -88,5 +98,6 @@ class LogoutView(View):
         auth.logout(request)
         return_to = request.GET.get("next", "/")
         if not return_to.startswith("/"):
-            return HttpResponseBadRequest("Invalid next parameter")
+            invalid_next(return_to)
+            return_to = "/"
         return redirect(return_to)
