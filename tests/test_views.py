@@ -16,7 +16,8 @@ class LoginViewTestCase(TestCase):
 
     def test_invalid_next(self):
         response = self.client.get(reverse("accounts:login") + "?next=https://example.com")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(accounts_settings.PLATFORM_URL + "/accounts/authorize/", response.url)
 
     def test_set_next(self):
         self.client.get(reverse("accounts:login") + "?next=/")
@@ -112,10 +113,18 @@ class CallbackViewTestCase(TestCase):
         self.assertRedirects(response, "/", fetch_redirect_response=False)
 
     def test_invalid_next(self, mock_fetch_token, mock_post):
+        mock_fetch_token.return_value = {  # Response from token
+            "access_token": "abc",
+            "refresh_token": "123",
+            "expires_in": 100,
+        }
+        mock_post.return_value.status_code = 200
+        mock_post.return_value.json.return_value = self.mock_post
         self.session["next"] = "http://example.com"
         self.session.save()
         response = self.client.get(reverse("accounts:callback"))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/")
 
 
 class LogoutViewTestCase(TestCase):
@@ -147,4 +156,5 @@ class LogoutViewTestCase(TestCase):
 
     def test_invalid_next(self):
         response = self.client.get(reverse("accounts:logout") + "?next=http://example.com")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/")
