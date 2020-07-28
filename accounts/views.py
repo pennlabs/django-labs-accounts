@@ -26,6 +26,12 @@ class LoginView(View):
     def get(self, request):
         return_to = request.GET.get("next", "/")
         if not return_to.startswith("/"):
+            try:
+                from sentry_sdk import capture_message
+
+                capture_message(f"Invalid next parameter: {return_to}", level="error")
+            except ImportError:
+                pass
             return HttpResponseBadRequest("Invalid next parameter")
         request.session["next"] = return_to
         if not request.user.is_authenticated:
