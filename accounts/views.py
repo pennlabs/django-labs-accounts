@@ -36,7 +36,7 @@ class LoginView(View):
         return_to = request.GET.get("next", "/")
         if not return_to.startswith("/"):
             invalid_next(return_to)
-            return HttpResponseBadRequest("Invalid next parameter")
+            return_to = "/"
         request.session["next"] = return_to
         if not request.user.is_authenticated:
             platform = OAuth2Session(
@@ -63,7 +63,7 @@ class CallbackView(View):
         return_to = request.session.pop("next", "/")
         if not return_to.startswith("/"):
             invalid_next(return_to)
-            return HttpResponseBadRequest("Invalid next parameter")
+            return_to = "/"
         state = request.session.pop("state")
         platform = OAuth2Session(
             accounts_settings.CLIENT_ID, redirect_uri=get_redirect_uri(request), state=state
@@ -100,5 +100,5 @@ class LogoutView(View):
         return_to = request.GET.get("next", "/")
         if not return_to.startswith("/"):
             invalid_next(return_to)
-            return HttpResponseBadRequest("Invalid next parameter")
+            return_to = "/"
         return redirect(return_to)
