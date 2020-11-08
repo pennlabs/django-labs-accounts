@@ -65,7 +65,6 @@ class LabsUserBackend(RemoteUserBackend):
             group, _ = Group.objects.get_or_create(name=f"platform_{group_name}")
             if group not in user.groups.all():
                 user.groups.add(group)
-                # TODO - need migrations that removes everyone from all the groups without prefix (so they're not in db for all products)
 
         user.save()
         self.post_authenticate(user, created, remote_user)
