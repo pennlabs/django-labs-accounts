@@ -11,3 +11,5 @@ dist/
 __pycache__/
 .tox
 test-results/
+
+*.egg-info
