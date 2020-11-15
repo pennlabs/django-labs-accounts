@@ -21,9 +21,10 @@ class BackendTestCase(TestCase):
             "groups": ["student", "member"],
             "token": {"access_token": "abc", "refresh_token": "123", "expires_in": 100},
         }
-        self.student_group = Group.objects.create(name="student")
+        print(Group.objects.all())
+        self.student_group, _ = Group.objects.get_or_create(name="student")
         self.student_group.save()
-        self.staff_group = Group.objects.create(name="staff")
+        self.staff_group, _ = Group.objects.get_or_create(name="platform_staff")
         self.staff_group.save()
         self.test_user = self.User.objects.create(
             id=2, first_name="First", last_name="Last", username="test", email="email@test.com"
@@ -129,15 +130,16 @@ class BackendTestCase(TestCase):
                 "email": self.test_user.email,
                 "affiliation": [],
                 "user_permissions": [],
-                "groups": ["student", "staff"],
-                "token": {"access_token": "abc", "refresh_token": "123", "expires_in": 100},
+                "groups": ["alum", "employee"],
+                "token": {"access_token": "def", "refresh_token": "456", "expires_in": 100},
             }
         )
-        self.assertEqual(2, user.groups.all().count())
-        student = Group.objects.get(name="platform_student")
-        staff = Group.objects.get(name="platform_staff")
-        self.assertIn(student, user.groups.all())
-        self.assertIn(staff, user.groups.all())
+        self.assertEqual(3, user.groups.all().count())
+        alum = Group.objects.get(name="platform_alum")
+        employee = Group.objects.get(name="platform_employee")
+        self.assertIn(alum, user.groups.all())
+        self.assertIn(employee, user.groups.all())
+        self.assertIn(self.student_group, user.groups.all())
 
     def test_custom_backend(self):
         with self.settings(AUTHENTICATION_BACKENDS=("tests.test_backends.CustomBackend",)):

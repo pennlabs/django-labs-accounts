@@ -11,8 +11,9 @@ def forwards_func(apps, schema_editor):
 
     for user in User.objects.all():
         user_group = user.groups.all()
-        for group in user_group:
-            user.groups.add(f"platfrom_{group}")
+        for group in groups:
+            if group in user_group:
+                user.groups.add(f"platfrom_{group}")
 
     for group in groups:
         Group.objects.using(db_alias).filter(name=group).delete()
