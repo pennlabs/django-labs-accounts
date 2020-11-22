@@ -21,7 +21,6 @@ class BackendTestCase(TestCase):
             "groups": ["student", "member"],
             "token": {"access_token": "abc", "refresh_token": "123", "expires_in": 100},
         }
-        print(Group.objects.all())
         self.student_group, _ = Group.objects.get_or_create(name="student")
         self.student_group.save()
         self.staff_group, _ = Group.objects.get_or_create(name="platform_staff")
