@@ -21,14 +21,13 @@ class BackendTestCase(TestCase):
             "groups": ["student", "member"],
             "token": {"access_token": "abc", "refresh_token": "123", "expires_in": 100},
         }
-        self.student_group, _ = Group.objects.get_or_create(name="student")
-        self.student_group.save()
+        self.student_group, _ = Group.objects.get_or_create(name="platform_student")
+        self.custom_group, _ = Group.objects.get_or_create(name="custom")
         self.staff_group, _ = Group.objects.get_or_create(name="platform_staff")
-        self.staff_group.save()
         self.test_user = self.User.objects.create(
             id=2, first_name="First", last_name="Last", username="test", email="email@test.com"
         )
-        self.test_user.groups.add(self.student_group, self.staff_group)
+        self.test_user.groups.add(self.student_group, self.custom_group, self.staff_group)
 
     def test_invalid_remote_user(self):
         user = auth.authenticate(remote_user=None)
@@ -138,7 +137,9 @@ class BackendTestCase(TestCase):
         employee = Group.objects.get(name="platform_employee")
         self.assertIn(alum, user.groups.all())
         self.assertIn(employee, user.groups.all())
-        self.assertIn(self.student_group, user.groups.all())
+        self.assertIn(self.custom_group, user.groups.all())
+        self.assertNotIn(self.student_group, user.groups.all())
+        self.assertNotIn(self.staff_group, user.groups.all())
 
     def test_custom_backend(self):
         with self.settings(AUTHENTICATION_BACKENDS=("tests.test_backends.CustomBackend",)):
