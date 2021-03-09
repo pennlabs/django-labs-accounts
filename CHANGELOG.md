@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.7.1 (2021-01-03)
+------------------
+* Scope platform groups to be able to properly update group information
+
 0.7.0 (2020-07-28)
 ------------------
 * Add sentry logging

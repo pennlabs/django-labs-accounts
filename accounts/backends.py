@@ -59,11 +59,11 @@ class LabsUserBackend(RemoteUserBackend):
                 user.is_staff = False
                 user.is_superuser = False
 
-        # Update groups
+        # Update groups: first remove them from existing groups then add them to new groups
+        user.groups.filter(name__startswith="platform_").delete()
         for group_name in remote_user["groups"]:
-            group, _ = Group.objects.get_or_create(name=group_name)
-            if group not in user.groups.all():
-                user.groups.add(group)
+            group, _ = Group.objects.get_or_create(name=f"platform_{group_name}")
+            user.groups.add(group)
 
         user.save()
         self.post_authenticate(user, created, remote_user)

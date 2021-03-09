@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
+
 from tests.views import TestView
 
 

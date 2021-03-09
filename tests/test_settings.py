@@ -1,7 +1,7 @@
 from django.test import TestCase
-from tests.settings import PLATFORM_ACCOUNTS
 
 from accounts.settings import DEFAULTS, accounts_settings
+from tests.settings import PLATFORM_ACCOUNTS
 
 
 class SettingsTestCase(TestCase):
