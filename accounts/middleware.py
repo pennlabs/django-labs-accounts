@@ -45,8 +45,6 @@ class OAuth2TokenMiddleware:
                             request.user = user
                         else:  # Error occurred
                             return HttpResponseServerError()
-                    else:  # Access token is invalid
-                        return HttpResponseForbidden()
                 except requests.exceptions.RequestException:  # Can't connect to platform
                     # Throw a 403 because we can't verify the incoming access token so we
                     # treat it as invalid. Ideally platform will never go down, so this
