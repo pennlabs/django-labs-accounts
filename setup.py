@@ -38,9 +38,10 @@ setup(
     long_description_content_type="text/markdown",
     install_requires=[
         "django>=2.0.0",
+        "djangorestframework",
         "requests-oauthlib>=1.2.0",
         "requests>=2.0.0",
-        "jwcrypto>=0.8"
+        "jwcrypto>=0.8",
     ],
     classifiers=[
         "Framework :: Django",
