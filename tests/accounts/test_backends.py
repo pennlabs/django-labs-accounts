@@ -142,7 +142,7 @@ class BackendTestCase(TestCase):
         self.assertNotIn(self.staff_group, user.groups.all())
 
     def test_custom_backend(self):
-        with self.settings(AUTHENTICATION_BACKENDS=("tests.test_backends.CustomBackend",)):
+        with self.settings(AUTHENTICATION_BACKENDS=("tests.accounts.test_backends.CustomBackend",)):
             user = auth.authenticate(remote_user=self.remote_user)
             self.assertEqual(user.first_name, "Modified")
 

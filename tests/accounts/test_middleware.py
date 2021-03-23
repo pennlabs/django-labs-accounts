@@ -113,7 +113,7 @@ class TestViewTestCase(TestCase):
         mock_request.return_value.status_code = 403
         self.headers["HTTP_AUTHORIZATION"] = "Bearer abc"
         response = self.client.get(reverse("test"), **self.headers)
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(200, response.status_code)
 
     def test_authorization_header_valid_user_exists(self, mock_request):
         mock_request.return_value.status_code = 200
