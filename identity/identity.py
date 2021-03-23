@@ -27,7 +27,6 @@ def get_platform_jwks():
 
     try:
         response = requests.get(JWKS_URL)
-        content = response.json()
         # For some reason this method wants a raw string instead of a python dictionary
         container.platform_jwks = jwk.JWKSet.from_json(response.text)
     except Exception:
