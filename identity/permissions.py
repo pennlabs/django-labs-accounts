@@ -1,6 +1,6 @@
 import json
-from jwcrypto import jwt
 
+from jwcrypto import jwt
 from rest_framework import permissions
 
 from identity.identity import container

@@ -1,5 +1,6 @@
 from django.apps import AppConfig
-from identity.identity import get_platform_jwks, attest
+
+from identity.identity import attest, get_platform_jwks
 
 
 class IdentityConfig(AppConfig):

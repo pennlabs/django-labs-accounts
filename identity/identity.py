@@ -1,7 +1,8 @@
-from jwcrypto import jwt, jwk
-import requests
-import time
 import json
+import time
+
+import requests
+from jwcrypto import jwk, jwt
 
 from accounts.settings import accounts_settings
 
