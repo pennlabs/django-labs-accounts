@@ -48,7 +48,10 @@ def attest():
     container.refresh_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["refresh"])
 
 
-def refresh_if_outdated():
+def _refresh_if_outdated():
+    """
+    Refresh the access jwt if it is expired.
+    """
     access_claims = json.loads(container.access_jwt.claims)
     # only continue if our access jwt is expired
     if time.time() < access_claims["exp"]:
@@ -60,19 +63,56 @@ def refresh_if_outdated():
     container.access_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["access"])
 
 
-# structure copied from:
-# https://github.com/psf/requests/blob/2f70990cd3fabf7b05cb9a69b3dab1a43bbf0096/requests/api.py#L64
-def get(url, params=None, **kwargs):
-    if "headers" not in kwargs:
-        kwargs["headers"] = {}
-    kwargs["headers"]["Authorization"] = f"Bearer {container.access_jwt.serialize()}"
-    return requests.get(url, params=params, **kwargs)
+def authenticated_b2b_request(
+    method,
+    url,
+    params=None,
+    data=None,
+    headers=None,
+    cookies=None,
+    files=None,
+    auth=None,
+    timeout=None,
+    allow_redirects=True,
+    proxies=None,
+    hooks=None,
+    stream=None,
+    verify=None,
+    cert=None,
+    json=None,
+):
+    """
+    Helper method to make an authenticated b2b request NOTE be ABSOLUTELY sure you
+    only make a request to Penn Labs products, otherwise you will expose credentials
+    and bad things will happen
+    """
 
+    # Attempt refresh
+    _refresh_if_outdated()
 
-# structure copied from:
-# https://github.com/psf/requests/blob/2f70990cd3fabf7b05cb9a69b3dab1a43bbf0096/requests/api.py#L107
-def post(url, data=None, json=None, **kwargs):
-    if "headers" not in kwargs:
-        kwargs["headers"] = {}
-    kwargs["headers"]["Authorization"] = f"Bearer {container.access_jwt.serialize()}"
-    return requests.post(url, data=data, json=json, **kwargs)
+    # Update Headers
+    headers = {} if headers is None else headers
+    headers["Authorization"] = f"Bearer {container.access_jwt.serialize()}"
+
+    # Make the request
+    # We're only using a session to provide an easy wrapper to define the http method
+    # GET, POST, etc in the method call.
+    s = requests.Session()
+    return s.request(
+        method=method,
+        url=url,
+        params=params,
+        data=data,
+        headers=headers,
+        cookies=cookies,
+        files=files,
+        auth=None,
+        timeout=None,
+        allow_redirects=allow_redirects,
+        proxies=proxies,
+        hooks=hooks,
+        stream=stream,
+        verify=verify,
+        cert=cert,
+        json=json,
+    )
