@@ -23,7 +23,7 @@ container = IdentityContainer()
 
 def get_platform_jwks():
     """
-    Download the JWKS from Platform to verify JWTS
+    Download the JWKS from Platform to verify JWTs
     """
 
     try:
@@ -53,8 +53,8 @@ def _refresh_if_outdated():
     Refresh the access jwt if it is expired.
     """
     access_claims = json.loads(container.access_jwt.claims)
-    # only continue if our access jwt is expired
-    if time.time() < access_claims["exp"]:
+    # only continue if our access jwt is expired (with a 30 second buffer)
+    if time.time() < access_claims["exp"] - 30:
         return
 
     auth_headers = {"Authorization": f"Bearer {container.refresh_jwt.serialize()}"}
