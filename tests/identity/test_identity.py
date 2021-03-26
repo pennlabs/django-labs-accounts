@@ -35,12 +35,13 @@ class ContainerTestCase(TestCase):
         urn = "org:pennlabs:example"
         access_jwt = mint_access_jwt(ID_PRIVATE_KEY, urn)
         refresh_jwt = mint_refresh_jwt(ID_PRIVATE_KEY, urn)
+        mock_response.return_value.status_code = 200
         mock_response.return_value.json.return_value = {
             "access": access_jwt.serialize(),
             "refresh": refresh_jwt.serialize(),
         }
         get_platform_jwks()
-        attest()
+        self.assertTrue(attest())
         self.assertEqual(access_jwt.serialize(), container.access_jwt.serialize())
         self.assertEqual(refresh_jwt.serialize(), container.refresh_jwt.serialize())
 
@@ -49,22 +50,31 @@ class RefreshOutdatedTestCase(TestCase):
     def setUp(self):
         configure_container(self)
 
-    @patch("identity.identity.requests.get")
-    def test_nop(self, mock_get):
+    @patch("identity.identity.requests.post")
+    def test_nop(self, mock_post):
         _refresh_if_outdated()
-        mock_get.assert_not_called()
+        mock_post.assert_not_called()
 
     @patch("identity.identity.time")
-    @patch("identity.identity.requests.get")
-    def test_refresh(self, mock_get, mock_time):
+    @patch("identity.identity.requests.post")
+    def test_refresh_valid_attest(self, mock_post, mock_time):
         # Pretend access JWT is expired
         mock_time.time.return_value = time.time() + 20 * 60
         # For testing only, use existing access jwt because it's valid
-        mock_get.return_value.json.return_value = {"access": container.access_jwt.serialize()}
+        mock_post.return_value.json.return_value = {"access": container.access_jwt.serialize()}
+        mock_post.return_value.status_code = 200
         _refresh_if_outdated()
-        mock_get.assert_called()
+        mock_post.assert_called()
         auth_headers = {"Authorization": f"Bearer {container.refresh_jwt.serialize()}"}
-        mock_get.assert_called_with(REFRESH_URL, headers=auth_headers)
+        mock_post.assert_called_with(REFRESH_URL, headers=auth_headers)
+
+    @patch("identity.identity.time")
+    @patch("identity.identity.requests.post")
+    def test_refresh_invalid_attest(self, mock_post, mock_time):
+        # Pretend access JWT is expired
+        mock_time.time.return_value = time.time() + 20 * 60
+        mock_post.return_value.status_code = 400
+        self.assertRaises(Exception, _refresh_if_outdated)
 
 
 class AuthenticatedB2BRequestTestCase(TestCase):

@@ -43,9 +43,12 @@ def attest():
     response = requests.post(
         ATTEST_URL, auth=(accounts_settings.CLIENT_ID, accounts_settings.CLIENT_SECRET)
     )
-    content = response.json()
-    container.access_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["access"])
-    container.refresh_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["refresh"])
+    if response.status_code == 200:
+        content = response.json()
+        container.access_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["access"])
+        container.refresh_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["refresh"])
+        return True
+    return False
 
 
 def _refresh_if_outdated():
@@ -58,9 +61,13 @@ def _refresh_if_outdated():
         return
 
     auth_headers = {"Authorization": f"Bearer {container.refresh_jwt.serialize()}"}
-    response = requests.get(REFRESH_URL, headers=auth_headers)
-    content = response.json()
-    container.access_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["access"])
+    response = requests.post(REFRESH_URL, headers=auth_headers)
+    if response.status_code == 200:
+        content = response.json()
+        container.access_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["access"])
+    else:
+        if not attest():  # If attest fails
+            raise Exception("Cannot authenticate with platform")
 
 
 def authenticated_b2b_request(
