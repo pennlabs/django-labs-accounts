@@ -30,6 +30,14 @@ class ContainerTestCase(TestCase):
         get_platform_jwks()
         self.assertEqual(PLATFORM_JWKS, container.platform_jwks.export(as_dict=True))
 
+    @patch("identity.identity.jwk.JWKSet")
+    @patch("identity.identity.requests.get")
+    def test_get_platform_jwks_invalid(self, mock_response, mock_jwkset):
+        mock_response.return_value.text = json.dumps(PLATFORM_JWKS)
+        mock_jwkset.from_json.side_effect = Exception("invalid jwks")
+        get_platform_jwks()
+        self.assertIsNone(container.platform_jwks)
+
     @patch("identity.identity.requests.get")
     @patch("identity.identity.requests.post")
     def test_attest(self, mock_response, mock_jwks_response):
@@ -46,6 +54,14 @@ class ContainerTestCase(TestCase):
         self.assertTrue(attest())
         self.assertEqual(access_jwt.serialize(), container.access_jwt.serialize())
         self.assertEqual(refresh_jwt.serialize(), container.refresh_jwt.serialize())
+
+    @patch("identity.identity.requests.get")
+    @patch("identity.identity.requests.post")
+    def test_attest_invalid(self, mock_response, mock_jwks_response):
+        mock_jwks_response.return_value.text = json.dumps(PLATFORM_JWKS)
+        mock_response.return_value.status_code = 400
+        get_platform_jwks()
+        self.assertFalse(attest())
 
 
 class ValidateUrnTestCase(TestCase):
