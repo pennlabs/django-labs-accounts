@@ -3,8 +3,8 @@ import re
 import time
 
 import requests
-from jwcrypto import jwk, jwt
 from django.core.exceptions import ImproperlyConfigured
+from jwcrypto import jwk, jwt
 
 from accounts.settings import accounts_settings
 
