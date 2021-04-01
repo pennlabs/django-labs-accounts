@@ -60,7 +60,7 @@ def validate_urn(urn):
     Ex. `urn:pennlabs:platform` or `urn:pennlabs:*`.
     """
     # Matches urn:<organization>:<product or wildcard>
-    pattern = re.compile("^urn:[a-z-]+:(?:[a-z-]+|\*)$")
+    pattern = re.compile(r"^urn:[a-z-]+:(?:[a-z-]+|\*)$")
     if not pattern.match(urn):
         raise ImproperlyConfigured(f"Invalid urn: '{urn}'")
 
