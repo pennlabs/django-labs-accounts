@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock
 
+from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 
 from identity.identity import container
@@ -8,6 +9,14 @@ from tests.identity.utils import configure_container
 
 
 class B2BTPermissionTestCase(TestCase):
+    def test_invalid_urn(self):
+        self.assertRaises(ImproperlyConfigured, B2BPermission, "fake:urn")
+
+    def test_valid_urn(self):
+        B2BPermission("urn:pennlabs:platform")
+
+
+class B2BTPermissionInnerTestCase(TestCase):
     def setUp(self):
         configure_container(self)
         self.permission = B2BPermission("urn:pennlabs:*")()

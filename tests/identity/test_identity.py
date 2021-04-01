@@ -42,7 +42,7 @@ class ContainerTestCase(TestCase):
     @patch("identity.identity.requests.post")
     def test_attest(self, mock_response, mock_jwks_response):
         mock_jwks_response.return_value.text = json.dumps(PLATFORM_JWKS)
-        urn = "org:pennlabs:example"
+        urn = "urn:pennlabs:example"
         access_jwt = mint_access_jwt(ID_PRIVATE_KEY, urn)
         refresh_jwt = mint_refresh_jwt(ID_PRIVATE_KEY, urn)
         mock_response.return_value.status_code = 200
