@@ -2,6 +2,7 @@ import json
 import time
 from unittest.mock import patch
 
+from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 
 from identity.identity import (
@@ -11,6 +12,7 @@ from identity.identity import (
     authenticated_b2b_request,
     container,
     get_platform_jwks,
+    validate_urn,
 )
 from tests.identity.utils import (
     ID_PRIVATE_KEY,
@@ -44,6 +46,21 @@ class ContainerTestCase(TestCase):
         self.assertTrue(attest())
         self.assertEqual(access_jwt.serialize(), container.access_jwt.serialize())
         self.assertEqual(refresh_jwt.serialize(), container.refresh_jwt.serialize())
+
+
+class ValidateUrnTestCase(TestCase):
+    def test_valid_urn(self):
+        validate_urn("urn:pennlabs:platform")
+
+    def test_valid_urn_wildcard(self):
+        validate_urn("urn:pennlabs:*")
+
+    def test_invalid_urn(self):
+        self.assertRaises(ImproperlyConfigured, validate_urn, "fake:pennlabs:*")
+
+    def test_invalid_urn_wildcard(self):
+        self.assertRaises(ImproperlyConfigured, validate_urn, "urn:pennlabs:penn-*")
+        self.assertRaises(ImproperlyConfigured, validate_urn, "urn:*:platform")
 
 
 class RefreshOutdatedTestCase(TestCase):

@@ -68,7 +68,7 @@ def configure_container(self):
     """
     Configure variables locally for testing
     """
-    self.urn = "org:pennlabs:example"
+    self.urn = "urn:pennlabs:example"
     container.platform_jwks = jwk.JWKSet.from_json(json.dumps(PLATFORM_JWKS))
     refresh_jwt = mint_refresh_jwt(ID_PRIVATE_KEY, self.urn)
     container.refresh_jwt = jwt.JWT(key=container.platform_jwks, jwt=refresh_jwt.serialize())

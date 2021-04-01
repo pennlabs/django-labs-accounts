@@ -3,14 +3,13 @@ import json
 from jwcrypto import jwt
 from rest_framework import permissions
 
-from identity.identity import container
+from identity.identity import container, validate_urn
 
 
 def B2BPermission(urn):
     """
     Create a B2BPermission that only grants access to a product with
     the provided urn.
-    Alternatively set urn to `all` to grant access to all Penn Labs products
     """
 
     class B2BPermissionInner(permissions.BasePermission):
@@ -32,9 +31,11 @@ def B2BPermission(urn):
                         validated_jwt = jwt.JWT(key=container.platform_jwks, jwt=raw_jwt)
                         claims = json.loads(validated_jwt.claims)
                         # Ensure JWT is an access JWT
-                        if "use" in claims and claims["use"] == "access":
-                            # Validate urn
-                            if self.urn == "all" or claims["sub"] == self.urn:
+                        if "use" in claims and claims["use"] == "access" and "sub" in claims:
+                            # Validate urn (wildcard prefix or exact match)
+                            if (
+                                self.urn.endswith("*") and claims["sub"].startswith(self.urn[:-1])
+                            ) or claims["sub"] == self.urn:
                                 # Expose product urn to view
                                 request.product = claims["sub"]
                                 return True
@@ -42,4 +43,5 @@ def B2BPermission(urn):
                         return False
             return False
 
+    validate_urn(urn)
     return B2BPermissionInner

@@ -7,10 +7,10 @@ from identity.permissions import B2BPermission
 from tests.identity.utils import configure_container
 
 
-class B2BTPermissionestCase(TestCase):
+class B2BTPermissionTestCase(TestCase):
     def setUp(self):
         configure_container(self)
-        self.permission = B2BPermission("all")()
+        self.permission = B2BPermission("urn:pennlabs:*")()
 
     def test_invalid_access_jwt(self):
         headers = {"HTTP_AUTHORIZATION": "Bearer abc"}
@@ -23,13 +23,13 @@ class B2BTPermissionestCase(TestCase):
         self.assertTrue(self.permission.has_permission(request, None))
 
     def test_valid_access_jwt_right_urn(self):
-        self.permission = B2BPermission("org:pennlabs:example")()
+        self.permission = B2BPermission("urn:pennlabs:example")()
         headers = {"HTTP_AUTHORIZATION": f"Bearer {container.access_jwt.serialize()}"}
         request = MagicMock(META=headers)
         self.assertTrue(self.permission.has_permission(request, None))
 
     def test_valid_access_jwt_wrong_urn(self):
-        self.permission = B2BPermission("fake:urn")()
+        self.permission = B2BPermission("urn:fake:*")()
         headers = {"HTTP_AUTHORIZATION": f"Bearer {container.access_jwt.serialize()}"}
         request = MagicMock(META=headers)
         self.assertFalse(self.permission.has_permission(request, None))

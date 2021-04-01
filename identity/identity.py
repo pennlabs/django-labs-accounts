@@ -1,8 +1,10 @@
 import json
+import re
 import time
 
 import requests
 from jwcrypto import jwk, jwt
+from django.core.exceptions import ImproperlyConfigured
 
 from accounts.settings import accounts_settings
 
@@ -49,6 +51,18 @@ def attest():
         container.refresh_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["refresh"])
         return True
     return False
+
+
+def validate_urn(urn):
+    """
+    Validate an urn to ensure it follows the specification we use in Penn Labs.
+    Use the format `urn:<organization>:<product slug or wildcard>`
+    Ex. `urn:pennlabs:platform` or `urn:pennlabs:*`.
+    """
+    # Matches urn:<organization>:<product or wildcard>
+    pattern = re.compile("^urn:[a-z-]+:(?:[a-z-]+|\*)$")
+    if not pattern.match(urn):
+        raise ImproperlyConfigured(f"Invalid urn: '{urn}'")
 
 
 def _refresh_if_outdated():
