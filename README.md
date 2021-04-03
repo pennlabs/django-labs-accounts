@@ -126,8 +126,10 @@ DLA also provides an interface for backend to backend IPC requests. In order to 
 from identity.permissions import B2BPermission
 
 class TestView(APIView):
-    permission_classes = [B2BPermission]
+    permission_classes = [B2BPermission("urn:pennlabs:example")]
 ```
+
+Make sure to define an URN to limit access. Valid URNs are either a specific product (ex. `urn:pennlabs:platform`) or a wildcard (ex. `urn:pennlabs:*`)
 
 In order to make an IPC request, use the included helper function:
 
