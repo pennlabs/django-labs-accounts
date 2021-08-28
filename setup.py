@@ -36,7 +36,12 @@ setup(
     description="Reusable Django app for Penn Labs accounts",
     long_description=DESCRIPTION,
     long_description_content_type="text/markdown",
-    install_requires=["django>=2.0.0", "requests-oauthlib>=1.2.0", "requests>=2.0.0"],
+    install_requires=[
+        "django>=2.0.0",
+        "requests-oauthlib>=1.2.0",
+        "requests>=2.0.0",
+        "djangorestframework>=3.11.0",
+    ],
     classifiers=[
         "Framework :: Django",
         "Programming Language :: Python",
