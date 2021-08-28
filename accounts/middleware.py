@@ -2,8 +2,7 @@ import requests
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseForbidden, HttpResponseServerError
-from rest_framework import authentication
-from rest_framework import exceptions
+from rest_framework import authentication, exceptions
 
 from accounts.settings import accounts_settings
 
