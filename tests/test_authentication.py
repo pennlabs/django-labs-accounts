@@ -55,10 +55,6 @@ class PlatformAuthenticationTestCase(TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_post_form_passing_token_auth_new_user(self, mock_request):
-        """
-        Ensure POSTing json over token auth with correct
-        credentials passes and does not require CSRF
-        """
         mock_request.return_value.status_code = 200
         self.valid_response["user"]["pennid"] = 456
         mock_request.return_value.json.return_value = self.valid_response
