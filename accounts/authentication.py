@@ -53,7 +53,7 @@ class PlatformAuthentication(authentication.BaseAuthentication):
             # Throw a 403 because we can't verify the incoming access token so we
             # treat it as invalid. Ideally platform will never go down, so this
             # should never happen.
-            return exceptions.AuthenticationFailed(
+            raise exceptions.AuthenticationFailed(
                 "Could not verify access token. Error connecting to platform."
             )
 

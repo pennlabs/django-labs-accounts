@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from rest_framework import permissions
 from rest_framework.views import APIView
 
+
 # Copied from django-rest-framework
 # https://github.com/encode/django-rest-framework/blob/71e6c30034a1dd35a39ca74f86c371713e762c79/tests/authentication/test_authentication.py#L36  # noqa
 
