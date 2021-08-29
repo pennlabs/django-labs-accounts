@@ -1,6 +1,14 @@
 Changelog
 =========
 
+x.y.z (UNRELEASED)
+------------------
+* Changes
+
+0.8.0 (UNRELEASED)
+------------------
+* Switch IPC on behalf of the user receiving end to use a django rest framework authentication class
+
 0.7.1 (2021-01-03)
 ------------------
 * Scope platform groups to be able to properly update group information
