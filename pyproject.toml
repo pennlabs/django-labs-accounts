@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "django-labs-accounts"
+version = "0.8.0"
+description = "Reusable Django app for Penn Labs accounts"
+authors = ["Penn Labs <contact@pennlabs.org>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/pennlabs/django-labs-accounts"
+repository = "https://github.com/pennlabs/django-labs-accounts"
+include = ["CHANGELOG.md", "LICENSE"]
+exclude = ["tox.ini"]
+packages = [
+    { include = "accounts" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Django = "^3.0"
+requests-oauthlib = "^1.2.0"
+requests = "^2.0.0"
+djangorestframework = "^3.11.0"
+
+[tool.poetry.dev-dependencies]
+black = "^21.8b0"
+flake8 = "^3.9.0"
+flake8-isort = "^4.0.0"
+flake8-quotes = "^3.2.0"
+flake8-absolute-import = "^1.0"
+pytest = "^6.2.3"
+pytest-cov = "^2.11.1"
+pytest-django = "^4.1.0"
+coverage = "^5.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
