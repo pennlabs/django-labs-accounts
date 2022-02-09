@@ -32,8 +32,8 @@ def authenticated_request(
     happen
     """
 
-    # Access token is expired. Try to refresh access token
-    if user.accesstoken.expires_at < timezone.now():
+    # Access token is non-existent or expired. Try to refresh access token
+    if not user.accesstoken or user.accesstoken.expires_at < timezone.now():
         if not _refresh_access_token(user):
             # Couldn't update the user's access token. Return a response with a 403 status code
             # as if the user didn't have access to the requested resource
@@ -77,6 +77,10 @@ def _refresh_access_token(user):
     Returns:
         bool: true if the access token is updated, false otherwise.
     """
+
+    if not user.refreshtoken:
+        return False
+
     body = {
         "grant_type": "refresh_token",
         "client_id": accounts_settings.CLIENT_ID,
