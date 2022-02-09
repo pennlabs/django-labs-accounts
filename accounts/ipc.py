@@ -4,6 +4,7 @@ import requests
 from django.utils import timezone
 
 from accounts.settings import accounts_settings
+from accounts.models import AccessToken, RefreshToken
 
 
 def authenticated_request(
@@ -93,12 +94,23 @@ def _refresh_access_token(user):
         )
         if data.status_code == 200:  # Access token refreshed successfully
             data = data.json()
-            # Update Access token
-            user.accesstoken.token = data["access_token"]
-            user.accesstoken.expires_at = timezone.now() + timedelta(
-                seconds=data["expires_in"]
-            )
-            user.accesstoken.save()
+
+            if not user.accesstoken:
+                # Creates Access token
+                AccessToken.objects.create(
+                    user=user,
+                    token=data["access_token"],
+                    expires_at=timezone.now() + timedelta(
+                        seconds=data["expires_in"]
+                    )
+                )
+            else:
+                # Update Access token
+                user.accesstoken.token = data["access_token"]
+                user.accesstoken.expires_at = timezone.now() + timedelta(
+                    seconds=data["expires_in"]
+                )
+                user.accesstoken.save()
 
             # Update Refresh Token
             user.refreshtoken.token = data["refresh_token"]
