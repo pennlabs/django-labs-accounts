@@ -135,7 +135,5 @@ class PlatformAuthenticationTestCase(TestCase):
         """
         Ensure POSTing json over token auth without correct credentials fails
         """
-        response = self.csrf_client.post(
-            self.path, {"example": "example"}, format="json"
-        )
+        response = self.csrf_client.post(self.path, {"example": "example"}, format="json")
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)

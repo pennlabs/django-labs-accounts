@@ -21,9 +21,7 @@ class RefreshTokenTestCase(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(username="abc")
         self.token = "123"
-        self.refreshtoken = RefreshToken.objects.create(
-            user=self.user, token=self.token
-        )
+        self.refreshtoken = RefreshToken.objects.create(user=self.user, token=self.token)
 
     def test_str(self):
         self.assertEqual(str(self.refreshtoken), self.token)

@@ -15,13 +15,9 @@ class LoginViewTestCase(TestCase):
         self.redirect = "/abc"
 
     def test_invalid_next(self):
-        response = self.client.get(
-            reverse("accounts:login") + "?next=https://example.com"
-        )
+        response = self.client.get(reverse("accounts:login") + "?next=https://example.com")
         self.assertEqual(response.status_code, 302)
-        self.assertIn(
-            accounts_settings.PLATFORM_URL + "/accounts/authorize/", response.url
-        )
+        self.assertIn(accounts_settings.PLATFORM_URL + "/accounts/authorize/", response.url)
 
     def test_set_next(self):
         self.client.get(reverse("accounts:login") + "?next=/")
@@ -38,9 +34,7 @@ class LoginViewTestCase(TestCase):
     def test_unauthenticated_user(self):
         response = self.client.get(reverse("accounts:login") + "?next=" + self.redirect)
         self.assertEqual(response.status_code, 302)
-        self.assertIn(
-            accounts_settings.PLATFORM_URL + "/accounts/authorize", response.url
-        )
+        self.assertIn(accounts_settings.PLATFORM_URL + "/accounts/authorize", response.url)
         self.assertIn("response_type=code", response.url)
         self.assertIn("client_id=" + accounts_settings.CLIENT_ID, response.url)
         self.assertIn(
@@ -53,14 +47,10 @@ class LoginViewTestCase(TestCase):
         accounts_settings.REDIRECT_URI = ""
         response = self.client.get(reverse("accounts:login") + "?next=" + self.redirect)
         self.assertEqual(response.status_code, 302)
-        self.assertIn(
-            accounts_settings.PLATFORM_URL + "/accounts/authorize", response.url
-        )
+        self.assertIn(accounts_settings.PLATFORM_URL + "/accounts/authorize", response.url)
         self.assertIn("response_type=code", response.url)
         self.assertIn("client_id=" + accounts_settings.CLIENT_ID, response.url)
-        self.assertIn(
-            "redirect_uri=" + urllib.parse.quote_plus("http://testserver"), response.url
-        )
+        self.assertIn("redirect_uri=" + urllib.parse.quote_plus("http://testserver"), response.url)
         self.assertIn("scope=" + "+".join(accounts_settings.SCOPE), response.url)
 
 
@@ -100,9 +90,7 @@ class CallbackViewTestCase(TestCase):
         self.assertRedirects(response, self.redirect, fetch_redirect_response=False)
 
     def test_inactive_user(self, mock_fetch_token, mock_post):
-        self.User.objects.create_user(
-            id=1, username="user", password="secret", is_active=False
-        )
+        self.User.objects.create_user(id=1, username="user", password="secret", is_active=False)
         mock_fetch_token.return_value = {
             "access_token": "abc",
             "refresh_token": "123",
@@ -168,8 +156,6 @@ class LogoutViewTestCase(TestCase):
         self.assertRedirects(response, "/", fetch_redirect_response=False)
 
     def test_invalid_next(self):
-        response = self.client.get(
-            reverse("accounts:logout") + "?next=http://example.com"
-        )
+        response = self.client.get(reverse("accounts:logout") + "?next=http://example.com")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/")

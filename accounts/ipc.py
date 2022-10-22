@@ -84,16 +84,12 @@ def _refresh_access_token(user):
         "refresh_token": user.refreshtoken.token,
     }
     try:
-        data = requests.post(
-            url=accounts_settings.PLATFORM_URL + "/accounts/token/", data=body
-        )
+        data = requests.post(url=accounts_settings.PLATFORM_URL + "/accounts/token/", data=body)
         if data.status_code == 200:  # Access token refreshed successfully
             data = data.json()
             # Update Access token
             user.accesstoken.token = data["access_token"]
-            user.accesstoken.expires_at = timezone.now() + timedelta(
-                seconds=data["expires_in"]
-            )
+            user.accesstoken.expires_at = timezone.now() + timedelta(seconds=data["expires_in"])
             user.accesstoken.save()
 
             # Update Refresh Token
