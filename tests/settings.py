@@ -14,7 +14,6 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE = [
-    "accounts.middleware.OAuth2TokenMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -44,7 +43,9 @@ TEMPLATES = [
     }
 ]
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "example.sqlite"}}
+DATABASES = {
+    "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "example.sqlite"}
+}
 
 
 LANGUAGE_CODE = "en-us"
@@ -66,6 +67,10 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 
-PLATFORM_ACCOUNTS = {"CLIENT_ID": "id", "CLIENT_SECRET": "secret", "REDIRECT_URI": "example"}
+PLATFORM_ACCOUNTS = {
+    "CLIENT_ID": "id",
+    "CLIENT_SECRET": "secret",
+    "REDIRECT_URI": "example",
+}
 
 TEST_OUTPUT_DIR = "test-results"

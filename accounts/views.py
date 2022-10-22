@@ -65,7 +65,9 @@ class CallbackView(View):
             return_to = "/"
         state = request.session.pop("state")
         platform = OAuth2Session(
-            accounts_settings.CLIENT_ID, redirect_uri=get_redirect_uri(request), state=state
+            accounts_settings.CLIENT_ID,
+            redirect_uri=get_redirect_uri(request),
+            state=state,
         )
 
         # Get the user's access and refresh tokens
@@ -78,7 +80,9 @@ class CallbackView(View):
         # Use the access token to log in the user using information from platform
         platform = OAuth2Session(accounts_settings.CLIENT_ID, token=token)
         introspect_url = accounts_settings.PLATFORM_URL + "/accounts/introspect/"
-        platform_request = platform.post(introspect_url, data={"token": token["access_token"]})
+        platform_request = platform.post(
+            introspect_url, data={"token": token["access_token"]}
+        )
         if platform_request.status_code == 200:  # Connected to platform successfully
             user_props = platform_request.json()["user"]
             user_props["token"] = token

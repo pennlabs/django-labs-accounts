@@ -25,9 +25,15 @@ class BackendTestCase(TestCase):
         self.custom_group, _ = Group.objects.get_or_create(name="custom")
         self.staff_group, _ = Group.objects.get_or_create(name="platform_staff")
         self.test_user = self.User.objects.create(
-            id=2, first_name="First", last_name="Last", username="test", email="email@test.com"
+            id=2,
+            first_name="First",
+            last_name="Last",
+            username="test",
+            email="email@test.com",
         )
-        self.test_user.groups.add(self.student_group, self.custom_group, self.staff_group)
+        self.test_user.groups.add(
+            self.student_group, self.custom_group, self.staff_group
+        )
 
     def test_invalid_remote_user(self):
         user = auth.authenticate(remote_user=None)
@@ -45,8 +51,12 @@ class BackendTestCase(TestCase):
         self.assertFalse(self.User.objects.all()[0].is_staff)
         self.assertEqual(len(AccessToken.objects.all()), 1)
         self.assertEqual(len(RefreshToken.objects.all()), 1)
-        self.assertEqual(self.remote_user["token"]["access_token"], user.accesstoken.token)
-        self.assertEqual(self.remote_user["token"]["refresh_token"], user.refreshtoken.token)
+        self.assertEqual(
+            self.remote_user["token"]["access_token"], user.accesstoken.token
+        )
+        self.assertEqual(
+            self.remote_user["token"]["refresh_token"], user.refreshtoken.token
+        )
 
     def test_update_user(self):
         self.assertEqual(len(self.User.objects.all()), 1)
@@ -58,12 +68,18 @@ class BackendTestCase(TestCase):
         self.assertEqual(user.username, "changed_user")
         self.assertEqual(len(AccessToken.objects.all()), 1)
         self.assertEqual(len(RefreshToken.objects.all()), 1)
-        self.assertEqual(self.remote_user["token"]["access_token"], user.accesstoken.token)
-        self.assertEqual(self.remote_user["token"]["refresh_token"], user.refreshtoken.token)
+        self.assertEqual(
+            self.remote_user["token"]["access_token"], user.accesstoken.token
+        )
+        self.assertEqual(
+            self.remote_user["token"]["refresh_token"], user.refreshtoken.token
+        )
 
     def test_login_user(self):
         self.assertEqual(len(self.User.objects.all()), 1)
-        student = self.User.objects.create_user(id=1, username="user", password="secret")
+        student = self.User.objects.create_user(
+            id=1, username="user", password="secret"
+        )
         user = auth.authenticate(remote_user=self.remote_user)
         self.assertEqual(user, student)
         self.assertEqual(len(self.User.objects.all()), 2)
@@ -72,7 +88,9 @@ class BackendTestCase(TestCase):
     def test_login_user_admin(self):
         self.remote_user["user_permissions"] = ["example_admin"]
         self.assertEqual(len(self.User.objects.all()), 1)
-        student = self.User.objects.create_user(id=1, username="user", password="secret")
+        student = self.User.objects.create_user(
+            id=1, username="user", password="secret"
+        )
         user = auth.authenticate(remote_user=self.remote_user)
         self.assertEqual(user, student)
         self.assertEqual(len(self.User.objects.all()), 2)
@@ -129,7 +147,11 @@ class BackendTestCase(TestCase):
                 "affiliation": [],
                 "user_permissions": [],
                 "groups": ["alum", "employee"],
-                "token": {"access_token": "def", "refresh_token": "456", "expires_in": 100},
+                "token": {
+                    "access_token": "def",
+                    "refresh_token": "456",
+                    "expires_in": 100,
+                },
             }
         )
         self.assertEqual(3, user.groups.all().count())

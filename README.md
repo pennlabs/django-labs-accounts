@@ -35,14 +35,18 @@ AUTHENTICATION_BACKENDS = (
 )
 ```
 
-Add the new accounts middleware to `MIDDLEWARE`. Note the middleware does not need to be at the top of the list, but should be placed above the default Django middleware.
+(Optional) Add the new Platform DRF authentication class to rest framework's `DEFAULT_AUTHENTICATION_CLASSES`. This authentication class should go at the end of the list of authentication classes in most cases.
 
 ```python
-MIDDLEWARE = [
+REST_FRAMEWORK = {
     ...
-    'accounts.middleware.OAuth2TokenMiddleware',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'accounts.authentication.PlatformAuthentication',
+    ]
     ...
-]
+}
 ```
 
 Add the following to `urls.py`
