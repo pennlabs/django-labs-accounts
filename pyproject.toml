@@ -19,6 +19,8 @@ Django = "^3.0"
 requests-oauthlib = "^1.2.0"
 requests = "^2.0.0"
 djangorestframework = "^3.11.0"
+six = "^1.16.0"
+jwcrypto = "^1.4.2"
 
 [tool.poetry.dev-dependencies]
 black = "^21.8b0"
