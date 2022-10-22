@@ -94,7 +94,9 @@ class RefreshOutdatedTestCase(TestCase):
         # Pretend access JWT is expired
         mock_time.time.return_value = time.time() + 20 * 60
         # For testing only, use existing access jwt because it's valid
-        mock_post.return_value.json.return_value = {"access": container.access_jwt.serialize()}
+        mock_post.return_value.json.return_value = {
+            "access": container.access_jwt.serialize()
+        }
         mock_post.return_value.status_code = 200
         _refresh_if_outdated()
         mock_post.assert_called()

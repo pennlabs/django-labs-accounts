@@ -26,7 +26,9 @@ SIGNING_ALG = "RS256"
 EXPIRY_TIME = 15 * 60  # 15 minutes
 ID_PRIVATE_KEY = jwk.JWK.from_pem(PLATFORM_PRIVATE_KEY.encode("utf-8"))
 
-PLATFORM_JWKS = {"keys": [{"alg": SIGNING_ALG, "use": "sig", "kid": ID_PRIVATE_KEY.thumbprint()}]}
+PLATFORM_JWKS = {
+    "keys": [{"alg": SIGNING_ALG, "use": "sig", "kid": ID_PRIVATE_KEY.thumbprint()}]
+}
 PLATFORM_JWKS["keys"][0].update(json.loads(ID_PRIVATE_KEY.export_public()))
 
 # Taken from platform
@@ -59,7 +61,9 @@ def mint_refresh_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
     - no exp claim because refresh JWTs do not expire
     """
     now = time.time()
-    token = jwt.JWT(header={"alg": SIGNING_ALG}, claims={"sub": urn, "use": "refresh", "iat": now})
+    token = jwt.JWT(
+        header={"alg": SIGNING_ALG}, claims={"sub": urn, "use": "refresh", "iat": now}
+    )
     token.make_signed_token(key)
     return token
 
@@ -71,6 +75,10 @@ def configure_container(self):
     self.urn = "urn:pennlabs:example"
     container.platform_jwks = jwk.JWKSet.from_json(json.dumps(PLATFORM_JWKS))
     refresh_jwt = mint_refresh_jwt(ID_PRIVATE_KEY, self.urn)
-    container.refresh_jwt = jwt.JWT(key=container.platform_jwks, jwt=refresh_jwt.serialize())
+    container.refresh_jwt = jwt.JWT(
+        key=container.platform_jwks, jwt=refresh_jwt.serialize()
+    )
     access_jwt = mint_access_jwt(ID_PRIVATE_KEY, self.urn)
-    container.access_jwt = jwt.JWT(key=container.platform_jwks, jwt=access_jwt.serialize())
+    container.access_jwt = jwt.JWT(
+        key=container.platform_jwks, jwt=access_jwt.serialize()
+    )

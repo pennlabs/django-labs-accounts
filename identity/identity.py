@@ -47,8 +47,12 @@ def attest():
     )
     if response.status_code == 200:
         content = response.json()
-        container.access_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["access"])
-        container.refresh_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["refresh"])
+        container.access_jwt = jwt.JWT(
+            key=container.platform_jwks, jwt=content["access"]
+        )
+        container.refresh_jwt = jwt.JWT(
+            key=container.platform_jwks, jwt=content["refresh"]
+        )
         return True
     return False
 
@@ -78,7 +82,9 @@ def _refresh_if_outdated():
     response = requests.post(REFRESH_URL, headers=auth_headers)
     if response.status_code == 200:
         content = response.json()
-        container.access_jwt = jwt.JWT(key=container.platform_jwks, jwt=content["access"])
+        container.access_jwt = jwt.JWT(
+            key=container.platform_jwks, jwt=content["access"]
+        )
     else:
         if not attest():  # If attest fails
             raise Exception("Cannot authenticate with platform")

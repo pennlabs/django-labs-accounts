@@ -15,7 +15,9 @@ class AuthenticatedRequestTestCase(TestCase):
         self.user = get_user_model().objects.create(username="abc")
         self.now = timezone.now()
         self.token = "abc"
-        AccessToken.objects.create(user=self.user, expires_at=self.now, token=self.token)
+        AccessToken.objects.create(
+            user=self.user, expires_at=self.now, token=self.token
+        )
         RefreshToken.objects.create(user=self.user)
 
     @patch("accounts.ipc._refresh_access_token")
@@ -56,8 +58,12 @@ class RefreshAccessTokenTestCase(TestCase):
         diff = self.now + timedelta(seconds=self.valid_response["expires_in"])
         self.assertTrue(value)
         self.assertTrue(diff < self.user.accesstoken.expires_at)
-        self.assertEqual(self.valid_response["access_token"], self.user.accesstoken.token)
-        self.assertEqual(self.valid_response["refresh_token"], self.user.refreshtoken.token)
+        self.assertEqual(
+            self.valid_response["access_token"], self.user.accesstoken.token
+        )
+        self.assertEqual(
+            self.valid_response["refresh_token"], self.user.refreshtoken.token
+        )
 
     def test_invalid_response(self, mock_post):
         mock_post.return_value.status_code = 403
@@ -68,5 +74,9 @@ class RefreshAccessTokenTestCase(TestCase):
         mock_post.side_effect = requests.exceptions.RequestException
         value = _refresh_access_token(self.user)
         self.assertFalse(value)
-        self.assertNotEqual(self.valid_response["access_token"], self.user.accesstoken.token)
-        self.assertNotEqual(self.valid_response["refresh_token"], self.user.refreshtoken.token)
+        self.assertNotEqual(
+            self.valid_response["access_token"], self.user.accesstoken.token
+        )
+        self.assertNotEqual(
+            self.valid_response["refresh_token"], self.user.refreshtoken.token
+        )

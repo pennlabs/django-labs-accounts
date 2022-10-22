@@ -11,7 +11,6 @@ include = ["CHANGELOG.md", "LICENSE"]
 exclude = ["tox.ini"]
 packages = [
     { include = "accounts" },
-    { include = "identity" },
 ]
 
 [tool.poetry.dependencies]
@@ -22,10 +21,9 @@ requests = "^2.0.0"
 djangorestframework = "^3.11.0"
 six = "^1.16.0"
 jwcrypto = "^1.4.2"
-black = "^22.3.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.3.0"
+black = "^21.8b0"
 flake8 = "^3.9.0"
 flake8-isort = "^4.0.0"
 flake8-quotes = "^3.2.0"
