@@ -79,9 +79,9 @@ def _refresh_access_token(user):
     """
     body = {
         "grant_type": "refresh_token",
-        "client_id": accounts_settings.CLIENT_ID,
-        "client_secret": accounts_settings.CLIENT_SECRET,
-        "refresh_token": user.refreshtoken.token,
+        "client_id": accounts_settings.CLIENT_ID, # from Product
+        "client_secret": accounts_settings.CLIENT_SECRET, # from Product
+        "refresh_token": user.refreshtoken.token, # refresh token from user
     }
     try:
         data = requests.post(

@@ -21,6 +21,7 @@ class PlatformAuthentication(authentication.BaseAuthentication):
 
     keyword = "Bearer"
 
+    # DLA receives an incoming authentication request (from another DLA for a product) and processes it
     def authenticate(self, request):
         authorization = request.META.get("HTTP_AUTHORIZATION", "").split()
         if not authorization or authorization[0] != self.keyword:
@@ -40,8 +41,6 @@ class PlatformAuthentication(authentication.BaseAuthentication):
                 headers=headers,
                 data=body,
             )
-            if platform_request.status_code != 200:  # Access token is invalid
-                raise exceptions.AuthenticationFailed("Invalid access token.")
             json = platform_request.json()
             user_props = json["user"]
             user = auth.authenticate(remote_user=user_props, tokens=False)
