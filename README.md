@@ -143,6 +143,27 @@ result = authenticated_b2b_request('GET', 'http://url/path')
 
 DLA and Penn Labs' templates are set up so that no configuration is needed to run in development. However, in production a client ID and client secret need to be set. These values should be set in vault. Contact platform for both credentials and any questions you have.
 
+## B2B IPC
+
+DLA also provides an interface for backend to backend IPC requests. In order to limit a view to only be available to a B2B IPC request, you can use the included DRF permission:
+
+```python
+from identity.permissions import B2BPermission
+
+class TestView(APIView):
+    permission_classes = [B2BPermission("urn:pennlabs:example")]
+```
+
+Make sure to define an URN to limit access. Valid URNs are either a specific product (ex. `urn:pennlabs:platform`) or a wildcard (ex. `urn:pennlabs:*`)
+
+In order to make an IPC request, use the included helper function:
+
+```python
+from identity.identity import authenticated_b2b_request
+
+result = authenticated_b2b_request('GET', 'http://url/path')
+```
+
 ## Changelog
 
 See [CHANGELOG.md](https://github.com/pennlabs/django-labs-accounts/blob/master/CHANGELOG.md)

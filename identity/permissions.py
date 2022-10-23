@@ -28,13 +28,20 @@ def B2BPermission(urn):
                 if auth_type == "Bearer":
                     try:
                         # Validate JWT
-                        validated_jwt = jwt.JWT(key=container.platform_jwks, jwt=raw_jwt)
+                        validated_jwt = jwt.JWT(
+                            key=container.platform_jwks, jwt=raw_jwt
+                        )
                         claims = json.loads(validated_jwt.claims)
                         # Ensure JWT is an access JWT
-                        if "use" in claims and claims["use"] == "access" and "sub" in claims:
+                        if (
+                            "use" in claims
+                            and claims["use"] == "access"
+                            and "sub" in claims
+                        ):
                             # Validate urn (wildcard prefix or exact match)
                             if (
-                                self.urn.endswith("*") and claims["sub"].startswith(self.urn[:-1])
+                                self.urn.endswith("*")
+                                and claims["sub"].startswith(self.urn[:-1])
                             ) or claims["sub"] == self.urn:
                                 # Expose product urn to view
                                 request.product = claims["sub"]
