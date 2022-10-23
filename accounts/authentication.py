@@ -41,6 +41,8 @@ class PlatformAuthentication(authentication.BaseAuthentication):
                 headers=headers,
                 data=body,
             )
+            if platform_request.status_code != 200:  # Access token is invalid
+                raise exceptions.AuthenticationFailed("Invalid access token.")
             json = platform_request.json()
             user_props = json["user"]
             user = auth.authenticate(remote_user=user_props, tokens=False)
