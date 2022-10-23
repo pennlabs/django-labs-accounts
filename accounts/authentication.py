@@ -21,7 +21,7 @@ class PlatformAuthentication(authentication.BaseAuthentication):
 
     keyword = "Bearer"
 
-    # DLA receives an incoming authentication request (from another DLA for a product) and processes it
+    # DLA receives an incoming authentication request (from another product DLA) and processes it
     def authenticate(self, request):
         authorization = request.META.get("HTTP_AUTHORIZATION", "").split()
         if not authorization or authorization[0] != self.keyword:
