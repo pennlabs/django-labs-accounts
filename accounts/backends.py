@@ -60,7 +60,7 @@ class LabsUserBackend(RemoteUserBackend):
                 user.is_superuser = False
 
         # Update groups: first clear them from existing groups then add them to new groups
-        user.groups.remove(user.groups.filter(name__startswith="platform_"))
+        user.groups.remove(*user.groups.filter(name__startswith="platform_"))
         for group_name in remote_user["groups"]:
             group, _ = Group.objects.get_or_create(name=f"platform_{group_name}")
             user.groups.add(group)
