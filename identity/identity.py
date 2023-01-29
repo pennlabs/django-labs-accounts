@@ -69,6 +69,20 @@ def validate_urn(urn):
         raise ImproperlyConfigured(f"Invalid urn: '{urn}'")
 
 
+def get_validated_claims(token):
+    """
+    Validates JWT and returns the claims if validated, None otherwise.
+    """
+    validated_jwt = jwt.JWT(
+        key=container.platform_jwks, jwt=token
+    )
+    claims = json.loads(validated_jwt.claims)
+    if "use" in claims and claims["use"] == "access" and "sub" in claims:
+        return claims
+    else:
+        return None
+
+
 def _refresh_if_outdated():
     """
     Refresh the access jwt if it is expired.

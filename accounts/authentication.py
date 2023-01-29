@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import authentication, exceptions
 
 from accounts.settings import accounts_settings
+from identity.identity import get_validated_claims
 
 
 User = get_user_model()
@@ -42,6 +43,9 @@ class PlatformAuthentication(authentication.BaseAuthentication):
                 data=body,
             )
             if platform_request.status_code != 200:  # Access token is invalid
+                # Allow access to a validated Platfrom JWT
+                if get_validated_claims(token):
+                    return (None, None)
                 raise exceptions.AuthenticationFailed("Invalid access token.")
             json = platform_request.json()
             user_props = json["user"]

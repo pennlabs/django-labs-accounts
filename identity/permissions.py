@@ -3,7 +3,7 @@ import json
 from jwcrypto import jwt
 from rest_framework import permissions
 
-from identity.identity import container, validate_urn
+from identity.identity import validate_urn, get_validated_claims
 
 
 def B2BPermission(urn):
@@ -27,17 +27,7 @@ def B2BPermission(urn):
                 auth_type, raw_jwt = authorization.split()
                 if auth_type == "Bearer":
                     try:
-                        # Validate JWT
-                        validated_jwt = jwt.JWT(
-                            key=container.platform_jwks, jwt=raw_jwt
-                        )
-                        claims = json.loads(validated_jwt.claims)
-                        # Ensure JWT is an access JWT
-                        if (
-                            "use" in claims
-                            and claims["use"] == "access"
-                            and "sub" in claims
-                        ):
+                        if claims := get_validated_claims(raw_jwt):
                             # Validate urn (wildcard prefix or exact match)
                             if (
                                 self.urn.endswith("*")
