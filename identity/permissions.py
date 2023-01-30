@@ -1,9 +1,6 @@
-import json
-
-from jwcrypto import jwt
 from rest_framework import permissions
 
-from identity.identity import validate_urn, get_validated_claims
+from identity.identity import get_validated_claims, validate_urn
 
 
 def B2BPermission(urn):

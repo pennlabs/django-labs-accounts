@@ -73,13 +73,16 @@ def get_validated_claims(token):
     """
     Validates JWT and returns the claims if validated, None otherwise.
     """
-    validated_jwt = jwt.JWT(
-        key=container.platform_jwks, jwt=token
-    )
-    claims = json.loads(validated_jwt.claims)
-    if "use" in claims and claims["use"] == "access" and "sub" in claims:
-        return claims
-    else:
+    try:
+        validated_jwt = jwt.JWT(key=container.platform_jwks, jwt=token)
+        claims = json.loads(validated_jwt.claims)
+        return (
+            claims
+            if "use" in claims and claims["use"] == "access" and "sub" in claims
+            else None
+        )
+    except ValueError:
+        # Catches error if token has unrecognizable format
         return None
 
 
