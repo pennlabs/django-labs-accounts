@@ -112,7 +112,7 @@ def authenticated_b2b_request(
     url,
     params=None,
     data=None,
-    headers=None,
+    headers={},
     cookies=None,
     files=None,
     timeout=None,
@@ -134,7 +134,6 @@ def authenticated_b2b_request(
     _refresh_if_outdated()
 
     # Update Headers
-    headers = {} if headers is None else headers
     headers["Authorization"] = f"Bearer {container.access_jwt.serialize()}"
 
     # Make the request
