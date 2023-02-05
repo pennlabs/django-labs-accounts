@@ -43,7 +43,7 @@ class PlatformAuthentication(authentication.BaseAuthentication):
                 data=body,
             )
             if platform_request.status_code != 200:  # Access token is invalid
-                # Allow access to a validated Platfrom JWT
+                # Allow access to a validated Platform JWT
                 if get_validated_claims(token):
                     return (None, None)
                 raise exceptions.AuthenticationFailed("Invalid access token.")
