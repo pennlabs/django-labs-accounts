@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-labs-accounts"
-version = "0.8.0"
+version = "0.9.0"
 description = "Reusable Django app for Penn Labs accounts"
 authors = ["Penn Labs <contact@pennlabs.org>"]
 license = "MIT"
