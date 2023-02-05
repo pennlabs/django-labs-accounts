@@ -165,7 +165,7 @@ class BackendTestCase(TestCase):
 
     def test_custom_backend(self):
         with self.settings(
-            AUTHENTICATION_BACKENDS=("tests.test_backends.CustomBackend",)
+            AUTHENTICATION_BACKENDS=("tests.accounts.test_backends.CustomBackend",)
         ):
             user = auth.authenticate(remote_user=self.remote_user)
             self.assertEqual(user.first_name, "Modified")
