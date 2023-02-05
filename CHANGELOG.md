@@ -5,7 +5,11 @@ x.y.z (UNRELEASED)
 ------------------
 * Changes
 
-0.8.0 (UNRELEASED)
+0.9.0 (2023-02-05)
+------------------
+* Introduced B2B IPC for Platform-based products
+
+0.8.0 (2021-08-28)
 ------------------
 * Switch IPC on behalf of the user receiving end to use a django rest framework authentication class
 
