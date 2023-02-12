@@ -7,7 +7,7 @@ x.y.z (UNRELEASED)
 
 0.9.0 (2023-02-05)
 ------------------
-* Introduced B2B IPC for Platform-based products
+* Introduced B2B IPC
 
 0.8.0 (2021-08-28)
 ------------------
