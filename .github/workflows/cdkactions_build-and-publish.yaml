@@ -20,10 +20,9 @@ jobs:
       - name: Check Tags
         run: |-
           GIT_TAG=${GITHUB_REF/refs\/tags\//}
-          LIBRARY_VERSION=$(poetry version -s)
+
           echo TESTING
           echo $GIT_TAG
-          echo $LIBRARY_VERSION
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
