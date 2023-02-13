@@ -39,6 +39,7 @@ jobs:
         run: pip install poetry
       - name: Verify tag
         run: |-
+          GIT_TAG=${GITHUB_REF}
           LIBRARY_VERSION=$(poetry version -s)
           POETRY_REF=refs/tags/$LIBRARY_VERSION
           if [[ ${GITHUB_REF} != POETRY_REF ]]; then exit 1; fi
