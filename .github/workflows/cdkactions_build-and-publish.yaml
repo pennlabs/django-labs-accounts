@@ -44,7 +44,7 @@ jobs:
           POETRY_REF=refs/tags/$LIBRARY_VERSION
           echo $POETRY_REF
           echo ${GITHUB_REF}
-          if [ ${GITHUB_REF} != POETRY_REF ]; then echo hi; fi
+          if [ ${GITHUB_REF} != POETRY_REF ]; then exit 1; fi
       # - name: Build
       #   run: poetry build
       # - name: Publish
