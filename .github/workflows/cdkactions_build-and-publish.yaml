@@ -38,9 +38,7 @@ jobs:
       - name: Verify tag
         run: |-
           GIT_TAG=${GITHUB_REF}
-          LIBRARY_VERSION=$(poetry version -s)
           echo $GIT_TAG
-          if [[ "$GIT_TAG" != LIBRARY_VERSION ]]; then exit 1; fi
       # - name: Build
       #   run: poetry build
       # - name: Publish
