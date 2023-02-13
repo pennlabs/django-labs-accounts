@@ -44,10 +44,10 @@ jobs:
           POETRY_REF=refs/tags/$LIBRARY_VERSION
           echo $POETRY_REF
           echo ${GITHUB_REF}
-          if [[ ${GITHUB_REF} != POETRY_REF ]]; then echo hi; fi
-      - name: Build
-        run: poetry build
-      - name: Publish
-        run: poetry publish
-        env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_PASSWORD }}
+          if [ ${GITHUB_REF} != POETRY_REF ]; then echo hi; fi
+      # - name: Build
+      #   run: poetry build
+      # - name: Publish
+      #   run: poetry publish
+      #   env:
+      #     POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_PASSWORD }}
