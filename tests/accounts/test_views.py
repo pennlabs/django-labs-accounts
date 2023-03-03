@@ -253,6 +253,21 @@ class TokenViewTestCase(TestCase):
         # Should fail because User object is never created in this test
         self.assertEqual(404, response.status_code)
 
+    @patch("accounts.views.requests.post")
+    def test_token_invalid_introspect(self, mock_requests_post):
+        mock_requests_post.return_value.json.return_value = self.mock_requests_json
+        mock_requests_post.return_value.status_code = 200
+        payload = {
+            "grant_type": "correct_grant_type",
+            "client_id": "correct_client_id",
+            "code": "correct_code",
+            "redirect_uri": "https://example.com",
+            "verifier": "correct_verifier",
+        }
+        response = self.client.post(reverse("accounts:token"), payload)
+        # Should fail because introspect invalidated the provided access token
+        self.assertEqual(403, response.status_code)
+
     def test_token_invalid_parameters(self):
         payload = {
             "grant_type": "invalid_grant_type",
