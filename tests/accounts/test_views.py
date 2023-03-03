@@ -173,3 +173,40 @@ class LogoutViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/")
+
+
+class TokenViewTestCase(TestCase):
+    def setUp(self):
+        self.User = get_user_model()
+        self.client = Client()
+
+    def test_token_valid(self):
+        self.User.objects.create(id=51777334, username="jesnipes", password="secret")
+        # code = "adPz8GhQ8bifKT9KPJKiGLoxPDzQQz&state=unUfSZH9RqwQWCh6PaLwNNBezDTyZD"
+
+        payload = {
+            "grant_type": "refresh_token",
+            "client_id": "Eq6DpbPWjP8LcUqoC166VSSWpCUwF8JICvJtUJ7P",
+            "refresh_token": "UQxyVjMXfbFbToyXdqiJJHQc1KJG3C",
+        }
+        response = self.client.post(reverse("accounts:token"), payload)
+        print(response.json())
+        self.assertEqual(0, 1)
+
+    def test_token_invalid_parameters(self):
+        payload = {
+            "grant_type": "invalid_grant_type",
+            "client_id": "invalid_client_id",
+            "refresh_token": "invalid_refresh",
+        }
+        response = self.client.post(reverse("accounts:token"), payload)
+        self.assertEqual(400, response.status_code)
+
+    def test_token_unknown_user(self):
+        payload = {
+            "grant_type": "invalid_grant_type",
+            "client_id": "invalid_client_id",
+            "refresh_token": "invalid_refresh",
+        }
+        response = self.client.post(reverse("accounts:token"), payload)
+        self.assertEqual(400, response.status_code)
