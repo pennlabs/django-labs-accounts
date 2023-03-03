@@ -152,7 +152,7 @@ class TokenView(View):
                     },
                 )
                 RefreshToken.objects.update_or_create(
-                    user=user, defaults={"token": ["refresh_token"]}
+                    user=user, defaults={"token": token["refresh_token"]}
                 )
                 return JsonResponse(response.json())
             return JsonResponse({"detail": "Invalid tokens"}, status=403)

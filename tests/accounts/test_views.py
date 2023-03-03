@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
+from accounts.models import AccessToken, RefreshToken
 from accounts.settings import accounts_settings
 
 
@@ -179,19 +180,78 @@ class TokenViewTestCase(TestCase):
     def setUp(self):
         self.User = get_user_model()
         self.client = Client()
+        self.mock_requests_json = {
+            "access_token": "abc",
+            "refresh_token": "123",
+            "expires_in": 100,
+            "token_type": "Bearer",
+            "scope": "read introspection",
+        }
+        # Response from introspect
+        self.mock_oauth_json = {
+            "user": {
+                "pennid": 1,
+                "first_name": "First",
+                "last_name": "Last",
+                "username": "user",
+                "email": "test@test.com",
+                "affiliation": [],
+                "user_permissions": [],
+                "groups": ["student", "member"],
+            }
+        }
 
-    def test_token_valid(self):
-        self.User.objects.create(id=51777334, username="jesnipes", password="secret")
-        # code = "adPz8GhQ8bifKT9KPJKiGLoxPDzQQz&state=unUfSZH9RqwQWCh6PaLwNNBezDTyZD"
-
+    @patch("accounts.views.OAuth2Session.post")
+    @patch("accounts.views.requests.post")
+    def test_token_valid(self, mock_requests_post, mock_oauth_post):
+        mock_requests_post.return_value.json.return_value = self.mock_requests_json
+        mock_requests_post.return_value.status_code = 200
+        mock_oauth_post.return_value.json.return_value = self.mock_oauth_json
+        mock_oauth_post.return_value.status_code = 200
+        user = self.User.objects.create(id=1, username="user", password="secret")
         payload = {
-            "grant_type": "refresh_token",
-            "client_id": "Eq6DpbPWjP8LcUqoC166VSSWpCUwF8JICvJtUJ7P",
-            "refresh_token": "UQxyVjMXfbFbToyXdqiJJHQc1KJG3C",
+            "grant_type": "correct_grant_type",
+            "client_id": "correct_client_id",
+            "refresh_token": "correct_refresh_token",
         }
         response = self.client.post(reverse("accounts:token"), payload)
-        print(response.json())
-        self.assertEqual(0, 1)
+        self.assertEqual(200, response.status_code)
+        res_json = response.json()
+        # Assert response is same as Platform response
+        self.assertEqual(
+            self.mock_requests_json["access_token"], res_json["access_token"]
+        )
+        self.assertEqual(
+            self.mock_requests_json["refresh_token"], res_json["refresh_token"]
+        )
+        self.assertEqual(self.mock_requests_json["expires_in"], res_json["expires_in"])
+        # Assert Access and Refresh tokens are correctly created in the backend
+        self.assertEqual(len(AccessToken.objects.all()), 1)
+        self.assertEqual(len(RefreshToken.objects.all()), 1)
+        self.assertEqual(
+            self.mock_requests_json["access_token"], user.accesstoken.token
+        )
+        self.assertEqual(
+            self.mock_requests_json["refresh_token"], user.refreshtoken.token
+        )
+
+    @patch("accounts.views.OAuth2Session.post")
+    @patch("accounts.views.requests.post")
+    def test_token_unknown_user(self, mock_requests_post, mock_oauth_post):
+        mock_requests_post.return_value.json.return_value = self.mock_requests_json
+        mock_requests_post.return_value.status_code = 200
+        mock_oauth_post.return_value.json.return_value = self.mock_oauth_json
+        mock_oauth_post.return_value.status_code = 200
+        payload = {
+            "grant_type": "correct_grant_type",
+            "client_id": "correct_client_id",
+            "code": "correct_code",
+            "redirect_uri": "https://example.com",
+            "verifier": "correct_verifier",
+        }
+        response = self.client.post(reverse("accounts:token"), payload)
+        # Should fail because User object is never created in this test
+        self.assertEqual(404, response.status_code)
 
     def test_token_invalid_parameters(self):
         payload = {
@@ -200,13 +260,5 @@ class TokenViewTestCase(TestCase):
             "refresh_token": "invalid_refresh",
         }
         response = self.client.post(reverse("accounts:token"), payload)
-        self.assertEqual(400, response.status_code)
-
-    def test_token_unknown_user(self):
-        payload = {
-            "grant_type": "invalid_grant_type",
-            "client_id": "invalid_client_id",
-            "refresh_token": "invalid_refresh",
-        }
-        response = self.client.post(reverse("accounts:token"), payload)
+        # Should fail because Platform request should invalidate the payload
         self.assertEqual(400, response.status_code)
