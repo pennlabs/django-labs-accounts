@@ -1,11 +1,20 @@
+import datetime
+
+import requests
 from django.contrib import auth
-from django.http import HttpResponseServerError
-from django.shortcuts import redirect
+from django.contrib.auth import get_user_model
+from django.http import HttpResponseServerError, JsonResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils import timezone
 from django.views import View
 from requests_oauthlib import OAuth2Session
 
+from accounts.models import AccessToken, RefreshToken
 from accounts.settings import accounts_settings
+
+
+User = get_user_model()
 
 
 def invalid_next(return_to):
@@ -105,3 +114,46 @@ class LogoutView(View):
             invalid_next(return_to)
             return_to = "/"
         return redirect(return_to)
+
+
+class TokenView(View):
+    """
+    View for token-based authentication, specifically for mobile products that
+    do not rely on session authentication.
+    Assumes OAuth2 Authorization code has been retrieved prior to accessing this route.
+    """
+
+    def post(self, request):
+        # Hit Platform OAuth2 token provider
+        token_url = accounts_settings.PLATFORM_URL + "/accounts/token/"
+        response = requests.post(token_url, data=request.POST.dict())
+        if response.status_code == 200:
+            token = response.json()
+            # Use the access token to retrieve user information from platform
+            platform = OAuth2Session(accounts_settings.CLIENT_ID, token=token)
+            introspect_url = accounts_settings.PLATFORM_URL + "/accounts/introspect/"
+            platform_request = platform.post(
+                introspect_url, data={"token": token["access_token"]}
+            )
+            if (
+                platform_request.status_code == 200
+            ):  # Connected to platform successfully
+                user_props = platform_request.json()["user"]
+                user = get_object_or_404(
+                    User, id=user_props["pennid"], username=user_props["username"]
+                )
+                # Update user Access and Refresh tokens
+                AccessToken.objects.update_or_create(
+                    user=user,
+                    defaults={
+                        "expires_at": timezone.now()
+                        + datetime.timedelta(seconds=token["expires_in"]),
+                        "token": token["access_token"],
+                    },
+                )
+                RefreshToken.objects.update_or_create(
+                    user=user, defaults={"token": token["refresh_token"]}
+                )
+                return JsonResponse(response.json())
+            return JsonResponse({"detail": "Invalid tokens"}, status=403)
+        return JsonResponse({"detail": "Invalid parameters"}, status=400)
