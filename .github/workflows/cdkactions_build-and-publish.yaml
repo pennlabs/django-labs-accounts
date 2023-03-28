@@ -42,8 +42,8 @@ jobs:
           GIT_TAG=${GITHUB_REF}
           LIBRARY_VERSION=$(poetry version -s)
           POETRY_REF=refs/tags/$LIBRARY_VERSION
-          echo $LIBRARY_VERSION
           echo $POETRY_REF
+          echo $GIT_TAG
           if [ GIT_TAG != POETRY_REF ]; then exit 1; fi
       - name: Build
         run: poetry build
