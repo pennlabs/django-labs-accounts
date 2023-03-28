@@ -7,7 +7,9 @@ from django.http import HttpResponseServerError, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from requests_oauthlib import OAuth2Session
 
 from accounts.models import AccessToken, RefreshToken
@@ -116,6 +118,7 @@ class LogoutView(View):
         return redirect(return_to)
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class TokenView(View):
     """
     View for token-based authentication, specifically for mobile products that
