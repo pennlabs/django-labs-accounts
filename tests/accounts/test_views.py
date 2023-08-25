@@ -250,8 +250,11 @@ class TokenViewTestCase(TestCase):
             "verifier": "correct_verifier",
         }
         response = self.client.post(reverse("accounts:token"), payload)
-        # Should fail because User object is never created in this test
-        self.assertEqual(404, response.status_code)
+        # If no User object, token should still go through, however
+        # no access and refresh tokens will be stored
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(len(AccessToken.objects.all()), 0)
+        self.assertEqual(len(RefreshToken.objects.all()), 0)
 
     @patch("accounts.views.requests.post")
     def test_token_invalid_introspect(self, mock_requests_post):

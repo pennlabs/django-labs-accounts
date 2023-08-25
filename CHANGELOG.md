@@ -5,6 +5,10 @@ x.y.z (UNRELEASED)
 ------------------
 * Changes
 
+0.9.3 (2023-02-05)
+------------------
+* Fix login regression for new mobile users
+
 0.9.0 (2023-02-05)
 ------------------
 * Introduced B2B IPC

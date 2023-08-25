@@ -164,6 +164,24 @@ from identity.identity import authenticated_b2b_request
 result = authenticated_b2b_request('GET', 'http://url/path')
 ```
 
+## Development Setup
+
+### Install poetry:
+
+`pipx install poetry`
+
+### Install Dependencies:
+
+`poetry install`
+
+### Testing:
+
+`export DJANGO_SETTINGS_MODULE=tests.settings && poetry run pytest`
+
+### Linting:
+
+`poetry run black . && poetry run isort . && poetry run flake8`
+
 ## Changelog
 
 See [CHANGELOG.md](https://github.com/pennlabs/django-labs-accounts/blob/master/CHANGELOG.md)

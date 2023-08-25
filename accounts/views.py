@@ -4,7 +4,7 @@ import requests
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseServerError, JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -142,21 +142,23 @@ class TokenView(View):
                 platform_request.status_code == 200
             ):  # Connected to platform successfully
                 user_props = platform_request.json()["user"]
-                user = get_object_or_404(
-                    User, id=user_props["pennid"], username=user_props["username"]
-                )
-                # Update user Access and Refresh tokens
-                AccessToken.objects.update_or_create(
-                    user=user,
-                    defaults={
-                        "expires_at": timezone.now()
-                        + datetime.timedelta(seconds=token["expires_in"]),
-                        "token": token["access_token"],
-                    },
-                )
-                RefreshToken.objects.update_or_create(
-                    user=user, defaults={"token": token["refresh_token"]}
-                )
+                user = User.objects.filter(
+                    id=user_props["pennid"], username=user_props["username"]
+                ).first()
+                # A user object will exist only after the first token retrieval
+                if user:
+                    # Update user Access and Refresh tokens
+                    AccessToken.objects.update_or_create(
+                        user=user,
+                        defaults={
+                            "expires_at": timezone.now()
+                            + datetime.timedelta(seconds=token["expires_in"]),
+                            "token": token["access_token"],
+                        },
+                    )
+                    RefreshToken.objects.update_or_create(
+                        user=user, defaults={"token": token["refresh_token"]}
+                    )
                 return JsonResponse(response.json())
             return JsonResponse({"detail": "Invalid tokens"}, status=403)
         return JsonResponse({"detail": "Invalid parameters"}, status=400)
