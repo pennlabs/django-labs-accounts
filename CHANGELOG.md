@@ -5,7 +5,11 @@ x.y.z (UNRELEASED)
 ------------------
 * Changes
 
-0.9.3 (2023-02-05)
+0.9.4 (2023-08-27)
+------------------
+* Authenticate user in TokenView for mobile users
+
+0.9.3 (2023-08-25)
 ------------------
 * Fix login regression for new mobile users
 
