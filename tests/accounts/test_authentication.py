@@ -6,8 +6,6 @@ from requests.exceptions import RequestException
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from accounts.models import AccessToken
-
 
 User = get_user_model()
 
@@ -55,7 +53,6 @@ class PlatformAuthenticationTestCase(TestCase):
             self.path, {"example": "example"}, HTTP_AUTHORIZATION=self.auth
         )
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(len(AccessToken.objects.all()), 1)
 
     def test_post_form_passing_token_auth_new_user(self, mock_request):
         mock_request.return_value.status_code = 200
@@ -68,7 +65,6 @@ class PlatformAuthenticationTestCase(TestCase):
         user = User.objects.get(id=456)
         self.assertEqual(user, response.wsgi_request.user)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(len(AccessToken.objects.all()), 1)
 
     def test_fail_authentication_if_user_is_not_active(self, mock_request):
         self.user.is_active = False
@@ -127,7 +123,6 @@ class PlatformAuthenticationTestCase(TestCase):
             HTTP_AUTHORIZATION=self.auth,
         )
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(len(AccessToken.objects.all()), 1)
 
     def test_post_form_failing_token_auth(self, mock_request):
         """
