@@ -1,12 +1,8 @@
-from datetime import timedelta
-
 import requests
 from django.contrib import auth
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 from rest_framework import authentication, exceptions
 
-from accounts.models import AccessToken
 from accounts.settings import accounts_settings
 from identity.identity import get_validated_claims
 
@@ -22,11 +18,6 @@ class PlatformAuthentication(authentication.BaseAuthentication):
     HTTP header, prepended with the string "Bearer ". For example:
 
         Authorization: Bearer abc
-
-    NOTE: When possible, always use the native DLA login routes.
-    One limitation of this route is that we only have access to
-    the bearer token, and thus cannot save a user's refresh token
-    to the database
     """
 
     keyword = "Bearer"
@@ -60,16 +51,6 @@ class PlatformAuthentication(authentication.BaseAuthentication):
             user_props = json["user"]
             user = auth.authenticate(remote_user=user_props, tokens=False)
             if user:  # User authenticated successfully
-                # NOTE: Ideally we would want to store both access and refresh tokens,
-                # but only the access token is available via this route
-                AccessToken.objects.update_or_create(
-                    user=user,
-                    defaults={
-                        "expires_at": timezone.now()
-                        + timedelta(seconds=user_props["token"]["expires_in"]),
-                        "token": user_props["token"]["access_token"],
-                    },
-                )
                 return (user, None)
             else:  # Error occurred
                 raise exceptions.AuthenticationFailed("Invalid User.")

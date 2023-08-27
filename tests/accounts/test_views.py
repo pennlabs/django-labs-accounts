@@ -242,6 +242,7 @@ class TokenViewTestCase(TestCase):
         mock_requests_post.return_value.status_code = 200
         mock_oauth_post.return_value.json.return_value = self.mock_oauth_json
         mock_oauth_post.return_value.status_code = 200
+        self.assertEqual(len(self.User.objects.all()), 0)
         payload = {
             "grant_type": "correct_grant_type",
             "client_id": "correct_client_id",
@@ -253,8 +254,9 @@ class TokenViewTestCase(TestCase):
         # If no User object, token should still go through, however
         # no access and refresh tokens will be stored
         self.assertEqual(200, response.status_code)
-        self.assertEqual(len(AccessToken.objects.all()), 0)
-        self.assertEqual(len(RefreshToken.objects.all()), 0)
+        self.assertEqual(len(self.User.objects.all()), 1)
+        self.assertEqual(len(AccessToken.objects.all()), 1)
+        self.assertEqual(len(RefreshToken.objects.all()), 1)
 
     @patch("accounts.views.requests.post")
     def test_token_invalid_introspect(self, mock_requests_post):

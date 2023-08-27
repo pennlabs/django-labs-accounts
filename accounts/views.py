@@ -123,6 +123,7 @@ class TokenView(View):
     """
     View for token-based authentication, specifically for mobile products that
     do not rely on session authentication.
+
     Assumes OAuth2 Authorization code has been retrieved prior to accessing this route.
     """
 
@@ -142,23 +143,22 @@ class TokenView(View):
                 platform_request.status_code == 200
             ):  # Connected to platform successfully
                 user_props = platform_request.json()["user"]
-                user = User.objects.filter(
-                    id=user_props["pennid"], username=user_props["username"]
-                ).first()
-                # A user object will exist only after the first token retrieval
-                if user:
-                    # Update user Access and Refresh tokens
-                    AccessToken.objects.update_or_create(
-                        user=user,
-                        defaults={
-                            "expires_at": timezone.now()
-                            + datetime.timedelta(seconds=token["expires_in"]),
-                            "token": token["access_token"],
-                        },
-                    )
-                    RefreshToken.objects.update_or_create(
-                        user=user, defaults={"token": token["refresh_token"]}
-                    )
+                # Retrieve or create user object from Platform response
+                user = auth.authenticate(request, remote_user=user_props, tokens=False)
+                if not user:
+                    return JsonResponse({"detail": "Invalid User"}, status=400)
+                # Update user Access and Refresh tokens
+                AccessToken.objects.update_or_create(
+                    user=user,
+                    defaults={
+                        "expires_at": timezone.now()
+                        + datetime.timedelta(seconds=token["expires_in"]),
+                        "token": token["access_token"],
+                    },
+                )
+                RefreshToken.objects.update_or_create(
+                    user=user, defaults={"token": token["refresh_token"]}
+                )
                 return JsonResponse(response.json())
             return JsonResponse({"detail": "Invalid tokens"}, status=403)
         return JsonResponse({"detail": "Invalid parameters"}, status=400)
