@@ -9,6 +9,7 @@ class LabsAnalytics:
     """
 
     ANALYTICS_URL = "https://jsonplaceholder.typicode.com/posts"
+    POOL_SIZE = 10
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
@@ -16,7 +17,7 @@ class LabsAnalytics:
         return cls.instance
 
     def __init__(self):
-        self.executor = ThreadPoolExecutor(max_workers=10)
+        self.executor = ThreadPoolExecutor(max_workers=self.POOL_SIZE)
 
     def submit(self, json):
         headers = {}
