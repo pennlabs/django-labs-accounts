@@ -5,6 +5,10 @@ x.y.z (UNRELEASED)
 ------------------
 * Changes
 
+0.9.5 (2024-03-02)
+------------------
+* Mandate Python 3.11 and Django 5.0.2
+
 0.9.4 (2023-08-27)
 ------------------
 * Authenticate user in TokenView for mobile users
