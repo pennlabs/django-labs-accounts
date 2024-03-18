@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class AnalyticsConfig(AppConfig):
-    name = "analyics"
+    name = "analytics"
     verbose_name = "Analytics Engine Functions"

@@ -7,6 +7,7 @@ from tests.views import MockView
 
 urlpatterns = [
     path("accounts/", include("accounts.urls", namespace="accounts")),
+    path("analytics/", include("analytics.urls", namespace="analytics")),
     path("admin/", admin.site.urls),
     path("token/", MockView.as_view(authentication_classes=[PlatformAuthentication])),
 ]
