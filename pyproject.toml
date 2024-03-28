@@ -12,6 +12,7 @@ exclude = ["tox.ini"]
 packages = [
     { include = "accounts" },
     { include = "identity" },
+    { include = "analytics" },
 ]
 
 [tool.poetry.dependencies]
