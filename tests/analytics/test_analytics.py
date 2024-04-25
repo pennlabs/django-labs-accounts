@@ -16,7 +16,6 @@ class AnalyticsTxnTestCase(TestCase):
 
         txn = AnalyticsTxn(**data)
         data_json = txn.to_json()
-        # data_dict = json.dumps(data_json)
 
         self.assertEqual(Product.MOBILE_BACKEND.value, int(data_json["product"]))
         self.assertIsNone(data_json["pennkey"])
@@ -33,11 +32,15 @@ class AnalyticsSubmission(TestCase):
     def test_submit(self):
         data = {
             "product": Product.MOBILE_BACKEND,
-            "pennkey": "hi",
-            "data": [{"key": "backend", "value": "data"}],
+            "pennkey": "judtin",
+            "data": [{"key": "backend", "value": "some data"}],
         }
 
-        txn = AnalyticsTxn(**data)
+        for _ in range(20):
+            data["product"] = Product((data["product"].value + 1) % len(Product))
+            txn = AnalyticsTxn(**data)
+            self.analytics_wrapper.submit(txn)
 
-        self.analytics_wrapper.submit(txn)
+        self.analytics_wrapper.executor.shutdown(wait=True)
+
         assert False

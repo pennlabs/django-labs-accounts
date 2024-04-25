@@ -1,4 +1,5 @@
 import json
+import time
 from concurrent.futures import ThreadPoolExecutor
 from enum import IntEnum
 from typing import Optional
@@ -65,17 +66,32 @@ class LabsAnalytics:
 
     def __init__(self): 
         self.executor = ThreadPoolExecutor(max_workers=self.POOL_SIZE)
+        self.session = NoRebuildAuthSession()
 
-    def submit(self, txn: AnalyticsTxn):
-        _refresh_if_outdated()
+        self.expires_at = None
+        self.headers = dict()
+        
+        # Local caching of expiration date and headers
+        self._refresh_expires_at()
+        self._refresh_headers()
 
-        headers = {
+    def _refresh_expires_at(self):
+        self.expires_at = json.loads(container.access_jwt.claims)["exp"]
+
+    def _refresh_headers(self):
+        self.headers = {
             "Authorization": f"Bearer {container.access_jwt.serialize()}",
             "Content-Type": "application/json"
         }
-        self.executor.submit(self.request_job, txn.to_json(), headers)
 
-    def request_job(self, json, headers):
-        session = NoRebuildAuthSession()
-        session.post(url=self.ANALYTICS_URL, json=json, headers=headers)
+    def submit(self, txn: AnalyticsTxn):
+        # Offer a 30 second buffer to refresh
+        if time.time() < self.expires_at - 30: 
+            _refresh_if_outdated()
+            self._refresh_expires_at()
+            self._refresh_headers()
 
+        self.executor.submit(self.send_message, txn.to_json())
+
+    def send_message(self, json):
+        self.session.post(url=self.ANALYTICS_URL, json=json, headers=self.headers)
