@@ -1,13 +1,13 @@
 import json
 from concurrent.futures import ThreadPoolExecutor
-from enum import Enum
+from enum import IntEnum
 from typing import Optional
 
-import requests
 from django.utils import timezone
 
+from identity.identity import _refresh_if_outdated, container
 
-class Product(Enum):
+class Product(IntEnum):
     OTHER = 0
     MOBILE_IOS = 1
     MOBILE_ANDROID = 2
@@ -30,23 +30,32 @@ class AnalyticsTxn:
         product: Product,
         pennkey: Optional[str],
         timestamp=timezone.now(),
-        data=dict(),
+        data=list(),
     ):
-        self.product = str(product)
+        self.product = product.value
         self.pennkey = pennkey
         self.timestamp = timestamp.timestamp()
         self.data = data
 
     def to_json(self):
-        return json.dumps(vars(self))
+        return json.loads(json.dumps(vars(self)))
 
+from requests import Session
+
+class NoRebuildAuthSession(Session):
+    def rebuild_auth(self, prepared_request, response):
+        """
+        No code here means requests will always preserve the Authorization
+        header when redirected.
+        Be careful not to leak your credentials to untrusted hosts!
+        """
 
 class LabsAnalytics:
     """
     Python wrapper for async requests to Labs Analytics Engine
     """
 
-    ANALYTICS_URL = "https://jsonplaceholder.typicode.com/posts"
+    ANALYTICS_URL = "https://analytics.pennlabs.org/analytics"
     POOL_SIZE = 10
 
     def __new__(cls, *args, **kwargs):
@@ -54,12 +63,19 @@ class LabsAnalytics:
             cls.instance = super(LabsAnalytics, cls).__new__(cls)
         return cls.instance
 
-    def __init__(self):
+    def __init__(self): 
         self.executor = ThreadPoolExecutor(max_workers=self.POOL_SIZE)
 
     def submit(self, txn: AnalyticsTxn):
-        headers = {}
+        _refresh_if_outdated()
+
+        headers = {
+            "Authorization": f"Bearer {container.access_jwt.serialize()}",
+            "Content-Type": "application/json"
+        }
         self.executor.submit(self.request_job, txn.to_json(), headers)
 
     def request_job(self, json, headers):
-        requests.post(self.ANALYTICS_URL, json=json, headers=headers)
+        session = NoRebuildAuthSession()
+        session.post(url=self.ANALYTICS_URL, json=json, headers=headers)
+
