@@ -5,6 +5,10 @@ x.y.z (UNRELEASED)
 ------------------
 * Changes
 
+1.0.0 (2024-04-25)
+------------------
+* Introducing Labs Analytics
+
 0.9.5 (2024-03-02)
 ------------------
 * Mandate Python 3.11 and Django 5.0.2
