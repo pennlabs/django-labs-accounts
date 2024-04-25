@@ -23,7 +23,9 @@ class AnalyticsTxnTestCase(TestCase):
 
 
 class AnalyticsSubmission(TestCase):
-    def setUp(self):
+    @mock.patch("analytics.analytics.LabsAnalytics._refresh_expires_at")
+    @mock.patch("analytics.analytics.LabsAnalytics._refresh_headers")
+    def setUp(self, mock_expires_at, mock_headers):
         # NOTE: use attest this for real testing
         # from identity.identity import attest
         # attest()
