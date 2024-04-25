@@ -24,8 +24,8 @@ jobs:
         run: pip install poetry tox tox-gh-actions codecov
       - name: Test
         run: tox
-      - name: Upload Code Coverage
-        run: codecov
+      # - name: Upload Code Coverage
+      #   run: codecov
   publish:
     runs-on: ubuntu-latest
     container:
