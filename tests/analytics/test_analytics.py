@@ -1,8 +1,6 @@
-import json
-
 from django.test import TestCase
 
-from analytics.analytics import AnalyticsTxn, Product, LabsAnalytics
+from analytics.analytics import AnalyticsTxn, LabsAnalytics, Product
 from identity.identity import attest
 
 
@@ -20,6 +18,7 @@ class AnalyticsTxnTestCase(TestCase):
         self.assertEqual(Product.MOBILE_BACKEND.value, int(data_json["product"]))
         self.assertIsNone(data_json["pennkey"])
         self.assertIn("timestamp", data_json)
+
 
 class AnalyticsSubmission(TestCase):
 

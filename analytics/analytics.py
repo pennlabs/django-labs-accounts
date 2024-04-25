@@ -5,8 +5,10 @@ from enum import IntEnum
 from typing import Optional
 
 from django.utils import timezone
+from requests import Session
 
 from identity.identity import _refresh_if_outdated, container
+
 
 class Product(IntEnum):
     OTHER = 0
@@ -41,7 +43,6 @@ class AnalyticsTxn:
     def to_json(self):
         return json.loads(json.dumps(vars(self)))
 
-from requests import Session
 
 class NoRebuildAuthSession(Session):
     def rebuild_auth(self, prepared_request, response):
@@ -50,6 +51,7 @@ class NoRebuildAuthSession(Session):
         header when redirected.
         Be careful not to leak your credentials to untrusted hosts!
         """
+
 
 class LabsAnalytics:
     """
@@ -64,13 +66,13 @@ class LabsAnalytics:
             cls.instance = super(LabsAnalytics, cls).__new__(cls)
         return cls.instance
 
-    def __init__(self): 
+    def __init__(self):
         self.executor = ThreadPoolExecutor(max_workers=self.POOL_SIZE)
         self.session = NoRebuildAuthSession()
 
         self.expires_at = None
         self.headers = dict()
-        
+
         # Local caching of expiration date and headers
         self._refresh_expires_at()
         self._refresh_headers()
@@ -81,12 +83,12 @@ class LabsAnalytics:
     def _refresh_headers(self):
         self.headers = {
             "Authorization": f"Bearer {container.access_jwt.serialize()}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
     def submit(self, txn: AnalyticsTxn):
         # Offer a 30 second buffer to refresh
-        if time.time() < self.expires_at - 30: 
+        if time.time() < self.expires_at - 30:
             _refresh_if_outdated()
             self._refresh_expires_at()
             self._refresh_headers()
