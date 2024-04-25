@@ -1,7 +1,9 @@
+import random
+from unittest import mock
+
 from django.test import TestCase
 
 from analytics.analytics import AnalyticsTxn, LabsAnalytics, Product
-from identity.identity import attest
 
 
 class AnalyticsTxnTestCase(TestCase):
@@ -21,25 +23,29 @@ class AnalyticsTxnTestCase(TestCase):
 
 
 class AnalyticsSubmission(TestCase):
-
-    # TODO: Add mocked test cases for Analytics
-
     def setUp(self):
-        attest()
+        # NOTE: use attest this for real testing
+        # from identity.identity import attest
+        # attest()
         self.analytics_wrapper = LabsAnalytics()
+        self.NUM_TRIES = 1000
 
-    def test_submit(self):
-        data = {
+    def rand_int(self):
+        return random.randint(1, self.NUM_TRIES)
+
+    def generate_data(self):
+        return {
             "product": Product.MOBILE_BACKEND,
-            "pennkey": "judtin",
-            "data": [{"key": "backend", "value": "some data"}],
+            "pennkey": None,
+            "data": [{"key": f"{self.rand_int()}", "value": f"{self.rand_int()}"}],
         }
 
-        for _ in range(20):
-            data["product"] = Product((data["product"].value + 1) % len(Product))
-            txn = AnalyticsTxn(**data)
+    @mock.patch("analytics.analytics.LabsAnalytics.submit")
+    def test_submit(self, mock_submit):
+        for _ in range(self.NUM_TRIES):
+            txn = AnalyticsTxn(**self.generate_data())
             self.analytics_wrapper.submit(txn)
 
-        self.analytics_wrapper.executor.shutdown(wait=True)
+        self.assertEqual(self.NUM_TRIES, mock_submit.call_count)
 
-        assert False
+        self.analytics_wrapper.executor.shutdown(wait=True)
