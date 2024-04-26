@@ -88,7 +88,7 @@ class LabsAnalytics:
 
     def submit(self, txn: AnalyticsTxn):
         # Offer a 30 second buffer to refresh
-        if time.time() < self.expires_at - 30:
+        if time.time() >= self.expires_at - 30:
             _refresh_if_outdated()
             self._refresh_expires_at()
             self._refresh_headers()
