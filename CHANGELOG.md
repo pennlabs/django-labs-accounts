@@ -5,6 +5,10 @@ x.y.z (UNRELEASED)
 ------------------
 * Changes
 
+1.0.1 (2024-04-26)
+------------------
+* Analytics Expiration bug fix
+
 1.0.0 (2024-04-25)
 ------------------
 * Introducing Labs Analytics
