@@ -6,8 +6,8 @@
 
 ## Requirements
 
-* Python 3.6+
-* Django 2.1+
+* Python 3.11+
+* Django 5.0+
 
 ## Installation
 
@@ -20,6 +20,7 @@ INSTALLED_APPS = (
     ...
     'accounts.apps.AccountsConfig',
     'identity.apps.IdentityConfig', # If you want to enable B2B IPC
+    'analytics.apps.AnalyticsConfig',
     ...
 )
 ```
@@ -116,6 +117,21 @@ class CustomBackend(LabsUserBackend):
     def post_authenticate(self, user, created, dictionary):
         user.first_name = 'Modified'
         user.save()
+```
+
+## Analytics
+
+DLA provides a wrapper class to submit analytics data from Labs backend servers to the Labs Analytics Server. For local testing, the necessary environment variables are the `CLIENT_ID`, `CLIENT_SECRET`, and `PLATFORM_URL`. Upon loading these variables, you can send data as follows:
+```python
+def generate_data(self):
+    return {
+        "product": Product.MOBILE_BACKEND,
+        "pennkey": None,
+        "data": [{"key": f"{self.rand_int()}", "value": f"{self.rand_int()}"}],
+    }
+
+txn = AnalyticsTxn(**self.generate_data())
+self.analytics_wrapper.submit(txn)
 ```
 
 ## B2B IPC
