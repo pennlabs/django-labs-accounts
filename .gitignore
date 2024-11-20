@@ -11,3 +11,4 @@ dist/
 __pycache__/
 .tox
 test-results/
+.env
