@@ -18,7 +18,10 @@ class PlatformAuthenticationTestCase(TestCase):
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.path = "/token/"
         self.header_prefix = "Bearer "
-        self.auth = f"{self.header_prefix}eyJ0eXAiOiAiSldUIiwgImFsZyI6ICJSUzI1NiIsICJraWQiOiAiZ2JoaHZzMmRTX2NDcjYwN0tzb1kzdjBNdjFpRlJkUUV2Z2xfSUVKZjBHYyJ9.eyJhdWQiOiAiNG12aUxodGo4N05LaHFCRFhsVjZDaXRmNWZZb015UXpSR05tWmRpaCIsICJpYXQiOiAxNzMxODY4MjQyLCAiYXRfaGFzaCI6ICIyRkZIeHVVaVpoRWE4MHBVWkRMR3d3IiwgInN1YiI6ICIwNjQ1MTgwMy01MWNhLTQ4OWUtYmY0OC05NWI3Y2Q0OTViOTEiLCAibmFtZSI6ICJTcml0YW4gTW90YXRpIiwgImVtYWlsIjogInNyaXRhbkBzZWFzLnVwZW5uLmVkdSIsICJwZW5ua2V5IjogInNyaXRhbiIsICJwZW5uaWQiOiA3NzcwOTE2MywgImlzX3N0YWZmIjogZmFsc2UsICJpc19hY3RpdmUiOiB0cnVlLCAiaXNzIjogImh0dHA6Ly9wbGF0Zm9ybS5wZW5ubGFicy5vcmcvYWNjb3VudCIsICJleHAiOiAxNzMxOTA0MjQyLCAiYXV0aF90aW1lIjogMTczMTcwOTEzMSwgImp0aSI6ICJmMjVhMGQ5NS0yZDJhLTRkOWYtYTNiNC05Yzk4Y2Y4NGZkYTIifQ.CpMIQVHBeQgvfqw0nGknYOXttNfiOphFGsFvlVVO3Jv1zSR577nOSIU-CQ_NBSmryY0DbWdvoMfcnmUgwmTUZa65HwKPfiSZD3UW47yqKhRSsPZqCDFCNrAl8o5ooVi3glmJuj4H4MQeCg7o44jXQk8jn2wzDW21Q7Tp_D6ubj_u1vMjcQ0ioa_EUj7ycV3A6SFCbhbaV1zyo_Trbz_4bDsnB9Ze4wkDW2ml5C1epqHnc12LyWeYGlptadchQoel5i9Dp4OGUj-fSVHKQzzggyhwiBk664GYnq1pIZiA-BVssFxp3fxBwe4-z6RVIY5n_mGDFfwtRngql5aGv-iyuK5d9Evvt-bTkSmU_uobhgGrbL-HiRcGrf2zOmS4rXGiiHpX4nIFKPWMJfS4k_gjegyz6rfu41iogto5IyCtmOEHx3-DbRUBi1qzSPCDURGODgjRY3vYEpmyPWJpOq0MazwtEytQMvFTPmBuRrvbJtCLF169xEb1d-km5K98KqLCJXZ8JftFLTYuyNP0NlWf3vDj9n25NQEG2fgzhbjl16XPmFB8Cri6tilD5Zr4nIE9JfTSmADgnjiHyXInhD9zx6rvr723R5_03QJRiR8W4xQpBaM1-4zZ99kkSRS9LaQoPoaVoGIWo_O--LAHRuWCvIv1itnqCcpdoH-c30x1pF8"
+        # TODO: Generate a valid token for the test
+        # instead of hardcoding with a token from Course Alert 2.0
+        valid_token = "abcd..."
+        self.auth = f"{self.header_prefix}{valid_token}"
 
         self.user = User.objects.create(id=123, username="username")
         self.headers = {}

@@ -9,7 +9,7 @@ from jwcrypto import jwk, jwt
 from accounts.settings import accounts_settings
 
 
-JWKS_URL = f"{accounts_settings.PLATFORM_URL}/identity/jwks/"
+JWKS_URL = f"{accounts_settings.PLATFORM_URL}/accounts/.well-known/jwks.json"
 ATTEST_URL = f"{accounts_settings.PLATFORM_URL}/identity/attest/"
 REFRESH_URL = f"{accounts_settings.PLATFORM_URL}/identity/refresh/"
 
