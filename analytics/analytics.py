@@ -318,19 +318,23 @@ class LabsAnalyticsRecorder(AnalyticsRecorder):
         }
 
     def submit_transaction(self, txn: AnalyticsTxn):
-        # TODO: We should make this fail safely, as to not interrupt the everyday
-        # business logic products do.
-        # However, given that we do not have appropriate logging infrastructure
+        try:
+            # Offer a 30 second buffer to refresh
+            # TODO: According to @judtinzhang, the reason we need this buffer is due to a
+            # subtle bug on DLA with regards to tokens.
+            if time.time() >= self.expires_at - 30:
+                _refresh_if_outdated()
+                self._refresh_expires_at()
+                self._refresh_headers()
 
-        # Offer a 30 second buffer to refresh
-        if time.time() >= self.expires_at - 30:
-            # TODO: According to @judtinzhang there is a subtle bug here with regards
-            # to tokens
-            _refresh_if_outdated()
-            self._refresh_expires_at()
-            self._refresh_headers()
+            self.executor.submit(self.send_message, txn.to_json())
+        except Exception:
+            # As to not interrupt everyday business logic products do when the analytics
+            # server is down, we should not raise an exception.
 
-        self.executor.submit(self.send_message, txn.to_json())
+            # TODO: However, we should be logging this error so that we can investigate.
+            # We should set up a logging infrastructure to do this.
+            pass
 
     def _send_message(self, json):
         self.session.post(url=self.ANALYTICS_URL, json=json, headers=self.headers)

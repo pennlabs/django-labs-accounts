@@ -23,7 +23,7 @@ class AnalyticsEntry(ABC):
     get_value_use_before: function to get the value to be recorded using the before context
     compute_before: function to compute some context before the view/function is called
     filter_do_record: function to determine if the entry should be recorded,
-                        defaults to record if exception is thrown
+                        defaults to not record if exception is thrown
 
     * Only one type of value "getter" should be supplied.
     """
