@@ -3,7 +3,12 @@ from unittest import mock
 
 from django.test import TestCase
 
-from analytics.analytics import AnalyticsTxn, LabsAnalytics, Product
+from analytics.analytics import (
+    AnalyticsTxn,
+    LabsAnalyticsRecorder,
+    Product,
+    get_analytics_recorder,
+)
 
 
 class AnalyticsTxnTestCase(TestCase):
@@ -23,13 +28,17 @@ class AnalyticsTxnTestCase(TestCase):
 
 
 class AnalyticsSubmission(TestCase):
-    @mock.patch("analytics.analytics.LabsAnalytics._refresh_expires_at")
-    @mock.patch("analytics.analytics.LabsAnalytics._refresh_headers")
+    @mock.patch("analytics.analytics.LabsAnalyticsRecorder._refresh_expires_at")
+    @mock.patch("analytics.analytics.LabsAnalyticsRecorder._refresh_headers")
     def setUp(self, mock_expires_at, mock_headers):
         # NOTE: use attest this for real testing
         # from identity.identity import attest
         # attest()
-        self.analytics_wrapper = LabsAnalytics()
+        self.analytics_wrapper = get_analytics_recorder(Product.MOBILE_BACKEND)
+
+        # should be this because mocking lets the refresh stuff not error
+        self.assertIsInstance(self.analytics_wrapper, LabsAnalyticsRecorder)
+
         self.NUM_TRIES = 1000
 
     def rand_int(self):
@@ -42,7 +51,7 @@ class AnalyticsSubmission(TestCase):
             "data": [{"key": f"{self.rand_int()}", "value": f"{self.rand_int()}"}],
         }
 
-    @mock.patch("analytics.analytics.LabsAnalytics.submit")
+    @mock.patch("analytics.analytics.LabsAnalyticsRecorder.submit_transaction")
     def test_submit(self, mock_submit):
         for _ in range(self.NUM_TRIES):
             txn = AnalyticsTxn(**self.generate_data())
