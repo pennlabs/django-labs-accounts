@@ -5,6 +5,10 @@ x.y.z (UNRELEASED)
 ------------------
 * Changes
 
+1.0.2 (2024-04-26)
+------------------
+* Release Analytics Library
+
 1.0.1 (2024-04-26)
 ------------------
 * Analytics Expiration bug fix
