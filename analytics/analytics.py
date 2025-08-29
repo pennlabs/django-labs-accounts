@@ -327,7 +327,7 @@ class LabsAnalyticsRecorder(AnalyticsRecorder):
                 self._refresh_expires_at()
                 self._refresh_headers()
 
-            self.executor.submit(self.send_message, txn.to_json())
+            self.executor.submit(self._send_message, txn.to_json())
         except Exception:
             # As to not interrupt everyday business logic products do when the analytics
             # server is down, we should not raise an exception.
