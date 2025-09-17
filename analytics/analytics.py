@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.termcolors import colorize
 from requests import Session
 from rest_framework.views import APIView
+from functools import wraps
 
 from analytics.entries import (
     AnalyticsEntry,
@@ -151,6 +152,7 @@ class AnalyticsRecorder(AnalyticsSubmitter):
         def decorator(func):
             explicit_args_names = func.__code__.co_varnames[: func.__code__.co_argcount]
 
+            @wraps(func)
             def wrapped_func(*args, **kwargs):
                 explicit_args = analytics_recorder._extract_explicit_args(
                     explicit_args_names, args, kwargs
@@ -205,6 +207,7 @@ class AnalyticsRecorder(AnalyticsSubmitter):
                     "UnaryFuncEntry can only be used with functions with a single argument"
                 )
 
+            @wraps(func)
             def wrapped_func(*args, **kwargs):
                 explicit_args = analytics_recorder._extract_explicit_args(
                     explicit_args_names, args, kwargs
