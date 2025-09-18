@@ -5,12 +5,12 @@ from concurrent.futures import ThreadPoolExecutor
 from enum import IntEnum
 from string import Template
 from typing import Any, Callable, List, Optional, Type
+from functools import wraps
 
 from django.utils import timezone
 from django.utils.termcolors import colorize
 from requests import Session
 from rest_framework.views import APIView
-from functools import wraps
 
 from analytics.entries import (
     AnalyticsEntry,
