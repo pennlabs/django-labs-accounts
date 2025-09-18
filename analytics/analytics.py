@@ -3,9 +3,9 @@ import time
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
 from enum import IntEnum
+from functools import wraps
 from string import Template
 from typing import Any, Callable, List, Optional, Type
-from functools import wraps
 
 from django.utils import timezone
 from django.utils.termcolors import colorize
