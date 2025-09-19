@@ -3,6 +3,7 @@ import time
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
 from enum import IntEnum
+from functools import wraps
 from string import Template
 from typing import Any, Callable, List, Optional, Type
 
@@ -151,6 +152,7 @@ class AnalyticsRecorder(AnalyticsSubmitter):
         def decorator(func):
             explicit_args_names = func.__code__.co_varnames[: func.__code__.co_argcount]
 
+            @wraps(func)
             def wrapped_func(*args, **kwargs):
                 explicit_args = analytics_recorder._extract_explicit_args(
                     explicit_args_names, args, kwargs
@@ -205,6 +207,7 @@ class AnalyticsRecorder(AnalyticsSubmitter):
                     "UnaryFuncEntry can only be used with functions with a single argument"
                 )
 
+            @wraps(func)
             def wrapped_func(*args, **kwargs):
                 explicit_args = analytics_recorder._extract_explicit_args(
                     explicit_args_names, args, kwargs
