@@ -45,13 +45,13 @@ class AnalyticsTxn:
         self,
         product: Product,
         pennkey: Optional[str],
-        timestamp=timezone.now(),
-        data=list(),
+        timestamp=None,
+        data=None,
     ):
         self.product = product.value
         self.pennkey = pennkey
-        self.timestamp = timestamp.timestamp()
-        self.data = data
+        self.timestamp = (timestamp or timezone.now()).timestamp()
+        self.data = data or []
 
     def to_json(self):
         return json.loads(json.dumps(vars(self)))
@@ -70,9 +70,10 @@ class AnalyticsSubmitter(ABC):
         data: List[dict],
         product: Optional[Product] = None,
         pennkey: Optional[str] = None,
-        timestamp=timezone.now(),
+        timestamp=None,
     ):
         product = product if product is not None else self.default_product
+        timestamp = timestamp or timezone.now()
         txn = AnalyticsTxn(product or self.default_product, pennkey, timestamp, data)
         self.submit_transaction(txn)
 
