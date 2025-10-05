@@ -73,7 +73,8 @@ class AnalyticsSubmitter(ABC):
         timestamp=None,
     ):
         product = product if product is not None else self.default_product
-        txn = AnalyticsTxn(product or self.default_product, pennkey, timestamp or timezone.now(), data)
+        timestamp = timestamp or timezone.now()
+        txn = AnalyticsTxn(product or self.default_product, pennkey, timestamp, data)
         self.submit_transaction(txn)
 
 
