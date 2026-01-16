@@ -5,6 +5,10 @@ x.y.z (UNRELEASED)
 ------------------
 * Changes
 
+1.0.6 (2025-12-28)
+------------------
+* Add support for custom user model 
+
 1.0.2 (2024-04-26)
 ------------------
 * Release Analytics Library
