@@ -23,9 +23,18 @@ def invalid_next(return_to):
     try:
         from sentry_sdk import capture_message
 
-        capture_message(f"Invalid next parameter: '{return_to}'", level="error")
+        capture_message("Invalid next parameter rejected", level="warning")
     except ImportError:
         pass
+
+
+def normalize_next(return_to):
+    if not return_to:
+        return "/"
+    if return_to.startswith("/") and not return_to.startswith("//"):
+        return return_to
+    invalid_next(return_to)
+    return "/"
 
 
 def get_redirect_uri(request):
@@ -43,10 +52,7 @@ class LoginView(View):
     """
 
     def get(self, request):
-        return_to = request.GET.get("next", "/")
-        if not return_to.startswith("/"):
-            invalid_next(return_to)
-            return_to = "/"
+        return_to = normalize_next(request.GET.get("next", "/"))
         request.session["next"] = return_to
         if not request.user.is_authenticated:
             platform = OAuth2Session(
@@ -70,10 +76,7 @@ class CallbackView(View):
     """
 
     def get(self, request):
-        return_to = request.session.pop("next", "/")
-        if not return_to.startswith("/"):
-            invalid_next(return_to)
-            return_to = "/"
+        return_to = normalize_next(request.session.pop("next", "/"))
         state = request.session.pop("state")
         platform = OAuth2Session(
             accounts_settings.CLIENT_ID,
@@ -111,10 +114,7 @@ class LogoutView(View):
 
     def get(self, request):
         auth.logout(request)
-        return_to = request.GET.get("next", "/")
-        if not return_to.startswith("/"):
-            invalid_next(return_to)
-            return_to = "/"
+        return_to = normalize_next(request.GET.get("next", "/"))
         return redirect(return_to)
 
 
