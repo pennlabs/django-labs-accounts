@@ -5,6 +5,10 @@ x.y.z (UNRELEASED)
 ------------------
 * Changes
 
+1.0.7 (2026-01-26)
+------------------
+* Change invalid_next level from error to warning
+
 1.0.6 (2025-12-28)
 ------------------
 * Add support for custom user model 
