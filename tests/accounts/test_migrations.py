@@ -2,9 +2,15 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.core.management import call_command
 from django.test import TestCase
 
 from accounts.migrations.rename_groups import forwards_func
+
+
+class MissingMigrationsTestCase(TestCase):
+    def test_models_match_migrations(self):
+        call_command("makemigrations", "accounts", check=True, dry_run=True)
 
 
 class RenameGroupsMigrationTestCase(TestCase):

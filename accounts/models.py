@@ -3,7 +3,7 @@ from django.db import models
 
 
 class AccessToken(models.Model):
-    token = models.CharField(max_length=255, blank=True, null=True)
+    token = models.TextField(blank=True, null=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     expires_at = models.DateTimeField()
 

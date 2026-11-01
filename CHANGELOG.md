@@ -1,9 +1,9 @@
 Changelog
 =========
 
-x.y.z (UNRELEASED)
+1.0.7 (2026-11-04)
 ------------------
-* Changes
+* Store access tokens in a TextField so they can hold JWTs. Run `migrate` after upgrading
 
 1.0.6 (2025-12-28)
 ------------------
